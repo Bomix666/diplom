@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пассажирские перевозки</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .autoComplete_wrapper {
+            width: 100%;
+        }
+        .autoComplete_wrapper > ul {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            max-height: 300px;
+            overflow-y: auto;
+            background: white;
+            z-index: 1000;
+        }
+        .autoComplete_wrapper > ul > li {
+            padding: 0;
+            border: none;
+        }
+        .autoComplete_wrapper > ul > li:hover {
+            background: none;
+        }
+        .autoComplete_wrapper mark {
+            background: #fcd34d;
+            color: inherit;
+            padding: 0;
+        }
+        .station-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .station-item:hover {
+            background-color: #f3f4f6;
+        }
+        .station-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        .station-location {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        input[type="date"] {
+            cursor: pointer;
+        }
+        .location-dropdown {
+            position: absolute;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+        
+        .location-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+        }
+        
+        .location-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .location-item.city {
+            font-weight: 500;
+        }
+        
+        .location-item.station {
+            padding-left: 1.5rem;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        
+        .route-card {
+            transition: all 0.3s ease;
+        }
+        
+        .route-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .map-container {
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .bus-icon {
+            width: 32px;
+            height: 32px;
+            position: relative;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <!-- 3D Canvas -->
+    <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
+
+    <!-- Навигация -->
+    <nav class="bg-orange-700 p-4 fixed w-full top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-xl font-bold animate__animated animate__fadeIn text-black hover:scale-105 transition-transform duration-300 transform hover:rotate-1" onclick="showTab('routes')">Пассажирские перевозки</a>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="px-4 nav-link hover:text-orange-100 transition-colors duration-300 font-medium text-black hover:scale-105 transition-transform duration-300 transform hover:translate-y-1" onclick="showTab('routes')">Маршруты</a>
+                <a href="#" class="px-4 nav-link hover:text-orange-100 transition-colors duration-300 font-medium text-black hover:scale-105 transition-transform duration-300 transform hover:translate-y-1" onclick="showTab('tickets')">Билеты</a>
+                <a href="#" class="px-4 nav-link hover:text-orange-100 transition-colors duration-300 font-medium text-black hover:scale-105 transition-transform duration-300 transform hover:translate-y-1" onclick="showTab('about')">О нас</a>
+                <a href="#" class="px-4 nav-link hover:text-orange-100 transition-colors duration-300 font-medium text-black hover:scale-105 transition-transform duration-300 transform hover:translate-y-1" onclick="showTab('profile')">Профиль</a>
+                <button onclick="showModal('authModal')" class="bg-white text-black px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors duration-300 font-medium hover:scale-105 transition-transform duration-300 transform hover:translate-y-1">
+                    Войти
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Модальное окно авторизации -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800" id="authTitle">Вход</h2>
+                <button onclick="hideModal('authModal')" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form id="authForm" class="space-y-4">
+                <div class="login-fields">
+                    <input type="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-black placeholder-gray-600">
+                    <input type="password" placeholder="Пароль" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mt-4 text-black placeholder-gray-600">
+                </div>
+                <div class="register-fields hidden">
+                    <input type="text" placeholder="Имя" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-black placeholder-gray-600">
+                    <input type="text" placeholder="Фамилия" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mt-4 text-black placeholder-gray-600">
+                </div>
+                <button type="submit" class="w-full bg-orange-500 text-black py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors duration-300 hover:scale-105 transition-transform duration-300">Войти</button>
+                <p class="text-center text-gray-600">
+                    <a href="#" onclick="toggleAuthMode()" class="text-orange-500 hover:underline" id="authToggle">Создать аккаунт</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно с маршрутами -->
+    <div id="routesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800" id="cityTitle">Маршруты</h2>
+                <button onclick="hideModal('routesModal')" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="routesList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                <!-- Маршруты будут добавляться динамически -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Главный контент -->
+    <main class="mt-20">
+        <!-- Разделы сайта -->
+        <section id="routes" class="tab-content py-10 bg-white shadow-md animate__animated animate__fadeIn">
+            <div class="max-w-7xl mx-auto px-4">
+                <!-- Форма поиска -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Поиск маршрутов</h2>
+                    <div class="flex flex-col md:flex-row gap-4 items-end">
+                        <div class="flex-1">
+                            <label for="departure" class="block text-sm font-medium text-gray-600 mb-1">Откуда</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                </div>
+                                <input type="text" id="departure" 
+                                       class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                                       placeholder="Введите город или станцию"
+                                       autocomplete="off">
+                                <div id="departureDropdown" class="location-dropdown hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center px-4">
+                            <button onclick="swapCities()" class="p-2 hover:text-orange-600 transform hover:scale-110 transition-all">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="flex-1">
+                            <label for="arrival" class="block text-sm font-medium text-gray-600 mb-1">Куда</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                </div>
+                                <input type="text" id="arrival" 
+                                       class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                                       placeholder="Введите город или станцию"
+                                       autocomplete="off">
+                                <div id="arrivalDropdown" class="location-dropdown hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-1">
+                            <label for="date" class="block text-sm font-medium text-gray-600 mb-1">Дата поездки</label>
+                            <div class="relative">
+                                <input type="date" id="date" 
+                                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none cursor-pointer">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="searchAvailableRoutes()" 
+                                class="bg-orange-600 text-white px-8 py-2 rounded-lg hover:bg-orange-700 transition-all duration-300 hover:scale-105">
+                            Найти
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Результаты поиска -->
+                <div id="searchResults" class="hidden mt-8">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-gray-800">Найденные маршруты</h3>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm text-gray-600">Сортировать по:</span>
+                                <select id="sortBy" onchange="sortRoutes()" 
+                                        class="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+                                    <option value="price">Цене</option>
+                                    <option value="time">Времени в пути</option>
+                                    <option value="departure">Времени отправления</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="routesList" class="space-y-4">
+                            <!-- Маршруты будут добавлены динамически -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Популярные направления -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Популярные направления</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="bg-white border rounded-lg p-4 hover:border-orange-600 hover:shadow-md transition-all duration-300">
+                            <div class="text-sm text-gray-600">Москва</div>
+                            <div class="text-lg font-semibold text-gray-800">Санкт-Петербург</div>
+                            <div class="text-sm text-gray-500">от 2500 ₽</div>
+                        </button>
+                        <button class="bg-white border rounded-lg p-4 hover:border-orange-600 hover:shadow-md transition-all duration-300">
+                            <div class="text-sm text-gray-600">Москва</div>
+                            <div class="text-lg font-semibold text-gray-800">Казань</div>
+                            <div class="text-sm text-gray-500">от 3000 ₽</div>
+                        </button>
+                        <button class="bg-white border rounded-lg p-4 hover:border-orange-600 hover:shadow-md transition-all duration-300">
+                            <div class="text-sm text-gray-600">Москва</div>
+                            <div class="text-lg font-semibold text-gray-800">Сочи</div>
+                            <div class="text-sm text-gray-500">от 3500 ₽</div>
+                        </button>
+                        <button class="bg-white border rounded-lg p-4 hover:border-orange-600 hover:shadow-md transition-all duration-300">
+                            <div class="text-sm text-gray-600">Москва</div>
+                            <div class="text-lg font-semibold text-gray-800">Екатеринбург</div>
+                            <div class="text-sm text-gray-500">от 4000 ₽</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Галерея транспорта -->
+                <div class="mt-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Наш транспорт</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-all duration-300 animate__animated animate__fadeInUp hover:shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Комфортабельный автобус" class="w-full h-64 object-cover transform hover:scale-110 transition-transform duration-500">
+                            <div class="p-6">
+                                <h4 class="text-xl font-semibold text-gray-800 transform hover:scale-105 transition-transform duration-300">Комфортабельный автобус</h4>
+                                <p class="text-gray-600 mt-2 transform hover:translate-x-2 transition-transform duration-300">Вместимость: 50 мест</p>
+                                <p class="text-gray-600 transform hover:translate-x-2 transition-transform duration-300">Кондиционер, Wi-Fi, USB-розетки</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-all duration-300 animate__animated animate__fadeInUp animate__delay-1s hover:shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Микроавтобус" class="w-full h-64 object-cover transform hover:scale-110 transition-transform duration-500">
+                            <div class="p-6">
+                                <h4 class="text-xl font-semibold text-gray-800 transform hover:scale-105 transition-transform duration-300">Микроавтобус</h4>
+                                <p class="text-gray-600 mt-2 transform hover:translate-x-2 transition-transform duration-300">Вместимость: 20 мест</p>
+                                <p class="text-gray-600 transform hover:translate-x-2 transition-transform duration-300">Комфортные кресла, кондиционер</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-all duration-300 animate__animated animate__fadeInUp animate__delay-2s hover:shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1501700493788-fa1a4fc9fe62?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="VIP-автобус" class="w-full h-64 object-cover transform hover:scale-110 transition-transform duration-500">
+                            <div class="p-6">
+                                <h4 class="text-xl font-semibold text-gray-800 transform hover:scale-105 transition-transform duration-300">VIP-автобус</h4>
+                                <p class="text-gray-600 mt-2 transform hover:translate-x-2 transition-transform duration-300">Вместимость: 30 мест</p>
+                                <p class="text-gray-600 transform hover:translate-x-2 transition-transform duration-300">Бизнес-класс, индивидуальные мониторы</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция городов с параллакс-эффектом -->
+        <div class="mt-20 relative overflow-hidden">
+            <h3 class="text-3xl font-bold text-gray-800 mb-12 text-center animate__animated animate__fadeInUp">Популярные направления</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Москва -->
+                <div class="relative h-96 rounded-xl overflow-hidden group transform hover:scale-105 transition-transform duration-500 cursor-pointer" onclick="showCityRoutes('Москва')">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all duration-500 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Москва" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute bottom-0 left-0 p-6 z-20 transform translate-y-0 group-hover:-translate-y-4 transition-transform duration-500">
+                        <h4 class="text-2xl font-bold text-white mb-2">Москва</h4>
+                        <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">Столица России, город с богатой историей и современной инфраструктурой</p>
+                    </div>
+                </div>
+
+                <!-- Санкт-Петербург -->
+                <div class="relative h-96 rounded-xl overflow-hidden group transform hover:scale-105 transition-transform duration-500 cursor-pointer" onclick="showCityRoutes('Санкт-Петербург')">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all duration-500 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Санкт-Петербург" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute bottom-0 left-0 p-6 z-20 transform translate-y-0 group-hover:-translate-y-4 transition-transform duration-500">
+                        <h4 class="text-2xl font-bold text-white mb-2">Санкт-Петербург</h4>
+                        <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">Культурная столица России с уникальной архитектурой</p>
+                    </div>
+                </div>
+
+                <!-- Казань -->
+                <div class="relative h-96 rounded-xl overflow-hidden group transform hover:scale-105 transition-transform duration-500 cursor-pointer" onclick="showCityRoutes('Казань')">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all duration-500 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Казань" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute bottom-0 left-0 p-6 z-20 transform translate-y-0 group-hover:-translate-y-4 transition-transform duration-500">
+                        <h4 class="text-2xl font-bold text-white mb-2">Казань</h4>
+                        <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">Город, где встречаются Восток и Запад</p>
+                    </div>
+                </div>
+
+                <!-- Сочи -->
+                <div class="relative h-96 rounded-xl overflow-hidden group transform hover:scale-105 transition-transform duration-500 cursor-pointer" onclick="showCityRoutes('Сочи')">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all duration-500 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Сочи" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute bottom-0 left-0 p-6 z-20 transform translate-y-0 group-hover:-translate-y-4 transition-transform duration-500">
+                        <h4 class="text-2xl font-bold text-white mb-2">Сочи</h4>
+                        <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">Курортный город на берегу Черного моря</p>
+                    </div>
+                </div>
+
+                <!-- Екатеринбург -->
+                <div class="relative h-96 rounded-xl overflow-hidden group transform hover:scale-105 transition-transform duration-500 cursor-pointer" onclick="showCityRoutes('Екатеринбург')">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all duration-500 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Екатеринбург" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute bottom-0 left-0 p-6 z-20 transform translate-y-0 group-hover:-translate-y-4 transition-transform duration-500">
+                        <h4 class="text-2xl font-bold text-white mb-2">Екатеринбург</h4>
+                        <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">Столица Урала с современной архитектурой</p>
+                    </div>
+                </div>
+
+                <!-- Нижний Новгород -->
+                <div class="relative h-96 rounded-xl overflow-hidden group transform hover:scale-105 transition-transform duration-500 cursor-pointer" onclick="showCityRoutes('Нижний Новгород')">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all duration-500 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Нижний Новгород" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute bottom-0 left-0 p-6 z-20 transform translate-y-0 group-hover:-translate-y-4 transition-transform duration-500">
+                        <h4 class="text-2xl font-bold text-white mb-2">Нижний Новгород</h4>
+                        <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">Город на слиянии Оки и Волги</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- О нас -->
+        <section id="about" class="tab-content hidden py-10 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">О нас</h2>
+                    <button onclick="showTab('routes')" class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                        На главную
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            Мы — современная компания, занимающаяся пассажирскими перевозками по всей России. Наша цель — сделать путешествия удобными, безопасными и доступными для всех.
+                        </p>
+                        <div class="mt-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Наши преимущества:</h3>
+                            <ul class="space-y-3 text-gray-600">
+                                <li class="flex items-center">
+                                    <svg class="w-6 h-6 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Современный комфортабельный транспорт
+                                </li>
+                                <li class="flex items-center">
+                                    <svg class="w-6 h-6 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Опытные водители
+                                </li>
+                                <li class="flex items-center">
+                                    <svg class="w-6 h-6 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Выгодные цены
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Контактная информация:</h3>
+                        <div class="bg-white rounded-lg p-6 shadow-lg">
+                            <p class="mb-3">
+                                <strong class="text-gray-700">Адрес:</strong>
+                                <span class="text-gray-600">Москва, ул. Примерная, 10</span>
+                            </p>
+                            <p class="mb-3">
+                                <strong class="text-gray-700">Телефон:</strong>
+                                <span class="text-gray-600">+7 (495) 123-45-67</span>
+                            </p>
+                            <p class="mb-3">
+                                <strong class="text-gray-700">Email:</strong>
+                                <span class="text-gray-600">info@example.com</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Билеты -->
+        <section id="tickets" class="tab-content hidden py-10 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">Доступные рейсы</h2>
+                    <button onclick="showTab('routes')" class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                        На главную
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800">Москва - Санкт-Петербург</h3>
+                                <p class="text-gray-600">5 марта 2025</p>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-sm font-medium px-2 py-0.5 rounded">В наличии</span>
+                        </div>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-gray-600"><span class="font-medium">Отправление:</span> 10:00</p>
+                            <p class="text-gray-600"><span class="font-medium">Прибытие:</span> 18:00</p>
+                            <p class="text-gray-600"><span class="font-medium">Свободных мест:</span> 15</p>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-orange-600">2500 ₽</span>
+                            <button class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                                Купить билет
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Добавьте больше карточек с билетами по аналогии -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Профиль -->
+        <section id="profile" class="tab-content hidden py-10 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">Личный кабинет</h2>
+                    <button onclick="showTab('routes')" class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                        На главную
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2">
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Мои данные</h3>
+                            <form class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Имя</label>
+                                    <input type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:outline-none" value="Иван">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Фамилия</label>
+                                    <input type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:outline-none" value="Иванов">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Email</label>
+                                    <input type="email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-600 focus:outline-none" value="ivan@example.com">
+                                </div>
+                                <button class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                                    Сохранить изменения
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Мои билеты</h3>
+                            <div class="space-y-4">
+                                <div class="border-b pb-4">
+                                    <p class="text-gray-600">Москва - Санкт-Петербург</p>
+                                    <p class="text-sm text-gray-500">5 марта 2025, 10:00</p>
+                                    <span class="text-orange-600 font-medium">2500 ₽</span>
+                                </div>
+                                <!-- Добавьте больше билетов по аналогии -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Подвал -->
+    <footer class="bg-orange-700 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-black">О компании</h3>
+                    <p class="text-black">Мы предоставляем качественные услуги пассажирских перевозок по всей России.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-black">Контакты</h3>
+                    <p class="text-black">Телефон: +7 (495) 123-45-67</p>
+                    <p class="text-black">Email: info@example.com</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-black">Мы в соцсетях</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-black hover:text-orange-100 transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-black hover:text-orange-100 transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-black hover:text-orange-100 transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <p class="text-black">&copy; 2025 Пассажирские перевозки. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="js/api.js"></script>
+    <!-- Замените YOUR_API_KEY на ваш API-ключ от Яндекс.Карт -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=ru_RU&load=package.full"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+    function showCityRoutes(city) {
+        const modal = document.getElementById('routesModal');
+        const title = document.getElementById('cityTitle');
+        const routesList = document.getElementById('routesList');
+        
+        title.textContent = `Маршруты в ${city}`;
+        
+        // Очищаем список маршрутов
+        routesList.innerHTML = '';
+        
+        // Добавляем маршруты (в реальном приложении это будут данные с сервера)
+        const routes = getRoutesForCity(city);
+        routes.forEach(route => {
+            const routeElement = document.createElement('div');
+            routeElement.className = 'bg-white rounded-lg shadow-md p-4 transform hover:scale-105 transition-transform duration-300';
+            routeElement.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800">${route.from} - ${route.to}</h3>
+                        <p class="text-gray-600 text-sm">${route.date}</p>
+                    </div>
+                    <span class="bg-green-100 text-green-800 text-sm font-medium px-2 py-0.5 rounded">${route.status}</span>
+                </div>
+                <div class="space-y-1 mb-3 text-sm">
+                    <p class="text-gray-600"><span class="font-medium">Отправление:</span> ${route.departure}</p>
+                    <p class="text-gray-600"><span class="font-medium">Прибытие:</span> ${route.arrival}</p>
+                    <p class="text-gray-600"><span class="font-medium">Свободных мест:</span> ${route.seats}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold text-orange-600">${route.price} ₽</span>
+                    <button class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                        Купить билет
+                    </button>
+                </div>
+            `;
+            routesList.appendChild(routeElement);
+        });
+        
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Блокируем прокрутку основной страницы
+    }
+
+    function getRoutesForCity(city) {
+        // В реальном приложении это будут данные с сервера
+        return [
+            {
+                from: 'Москва',
+                to: city,
+                date: '5 марта 2025',
+                status: 'В наличии',
+                departure: '10:00',
+                arrival: '18:00',
+                seats: '15',
+                price: '2500'
+            },
+            {
+                from: 'Москва',
+                to: city,
+                date: '6 марта 2025',
+                status: 'В наличии',
+                departure: '14:00',
+                arrival: '22:00',
+                seats: '20',
+                price: '2700'
+            },
+            {
+                from: 'Москва',
+                to: city,
+                date: '7 марта 2025',
+                status: 'В наличии',
+                departure: '08:00',
+                arrival: '16:00',
+                seats: '10',
+                price: '2300'
+            }
+        ];
+    }
+
+    function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.add('hidden');
+        document.body.style.overflow = ''; // Восстанавливаем прокрутку основной страницы
+    }
+
+    // Список станций и городов
+    const stations = [
+        { name: "г. Москва, Москва и Московская область", type: "city" },
+        { name: "г. Санкт-Петербург, Санкт-Петербург и Ленинградская область", type: "city" },
+        { name: "вкз. Москва (Киевский вокзал), Москва", type: "station" },
+        { name: "вкз. Калуга-1, Калуга", type: "station" },
+        { name: "ст. Царицыно, Москва", type: "station" },
+        { name: "г. Тула, Тульская область", type: "city" },
+        { name: "вкз. Серпухов, Серпухов", type: "station" },
+        { name: "ст. Аэропорт Сочи, Сочи", type: "station" },
+        { name: "о.п. Горный Воздух, Краснодарский край", type: "station" },
+        { name: "ст. Варшавская, Москва", type: "station" }
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const departure = document.getElementById('departure');
+        const arrival = document.getElementById('arrival');
+        const date = document.getElementById('date');
+        
+        // Устанавливаем диапазон дат на 2024 год для тестовых данных
+        const startDate = new Date('2024-04-19');
+        const endDate = new Date('2024-12-31');
+        
+        const formatDate = (date) => {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        };
+
+        date.min = formatDate(startDate);
+        date.max = formatDate(endDate);
+        date.value = formatDate(startDate);
+        
+        // Настройка поиска городов
+        setupLocationInput(departure, 'departureDropdown');
+        setupLocationInput(arrival, 'arrivalDropdown');
+    });
+
+    function setupLocationInput(input, dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        let searchTimeout;
+        
+        input.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value;
+            
+            if (query.length < 2) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+            
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const cities = await searchCities(query);
+                    dropdown.innerHTML = '';
+                    
+                    if (cities.length > 0) {
+                        cities.forEach(city => {
+                            const div = document.createElement('div');
+                            div.className = 'location-item';
+                            div.textContent = `${city.name}, ${city.region}`;
+                            div.onclick = () => {
+                                input.value = city.name;
+                                dropdown.classList.add('hidden');
+                            };
+                            dropdown.appendChild(div);
+                        });
+                        dropdown.classList.remove('hidden');
+                    } else {
+                        dropdown.classList.add('hidden');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }, 300);
+        });
+        
+        // Скрываем выпадающий список при клике вне него
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    function swapCities() {
+        const departure = document.getElementById('departure');
+        const arrival = document.getElementById('arrival');
+        [departure.value, arrival.value] = [arrival.value, departure.value];
+    }
+
+    // Функция для переключения вкладок без анимации
+    function showTab(tabId) {
+        const tabs = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            if (tab.id === tabId) {
+                tab.classList.remove('hidden');
+            } else {
+                tab.classList.add('hidden');
+            }
+        });
+    }
+
+    // Функция для форматирования времени
+    function formatTime(timeStr) {
+        // Убираем 'T' и 'Z' из строки времени
+        timeStr = timeStr.replace('T', ' ').replace('Z', '');
+        const date = new Date(timeStr);
+        return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Функция для расчета времени в пути
+    function calculateTravelTime(departure, arrival) {
+        // Убираем 'T' и 'Z' из строк времени
+        const dep = new Date(departure.replace('T', ' ').replace('Z', ''));
+        const arr = new Date(arrival.replace('T', ' ').replace('Z', ''));
+        
+        const diff = arr - dep;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        return `${hours} ч ${minutes} мин`;
+    }
+
+    // Обновляем функцию для поиска городов
+    async function searchCities(query) {
+        if (!query || query.length < 2) return [];
+        try {
+            const response = await fetch(`http://localhost:8000/api/cities/search/?q=${encodeURIComponent(query)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error searching cities:', error);
+            return [];
+        }
+    }
+
+    // Обновляем функцию для поиска маршрутов
+    async function searchRoutes(departureCity, arrivalCity, date) {
+        try {
+            const response = await fetch(
+                `http://localhost:8000/api/routes/search/?` +
+                `departure_city=${encodeURIComponent(departureCity)}&` +
+                `arrival_city=${encodeURIComponent(arrivalCity)}&` +
+                `date=${date}`
+            );
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error searching routes:', error);
+            return [];
+        }
+    }
+
+    // Инициализация автозаполнения для полей ввода городов
+    ['departure', 'arrival'].forEach(fieldId => {
+        const autoCompleteJs = new autoComplete({
+            selector: `#${fieldId}`,
+            placeHolder: fieldId === 'departure' ? "Откуда" : "Куда",
+            data: {
+                src: async (query) => {
+                    try {
+                        if (!query || query.length < 2) return [];
+                        console.log('Searching cities for query:', query);
+                        const cities = await searchCities(query);
+                        console.log('Cities found:', cities);
+                        return cities;
+                    } catch (error) {
+                        console.error('Error fetching cities:', error);
+                        return [];
+                    }
+                },
+                cache: true,
+                keys: ['name']
+            },
+            resultItem: {
+                highlight: true,
+                element: (item, data) => {
+                    item.innerHTML = `
+                        <div class="flex flex-col py-2 px-3">
+                            <div class="font-medium">${data.value.name}</div>
+                            <div class="text-sm text-gray-500">${data.value.region || ''}</div>
+                        </div>
+                    `;
+                }
+            },
+            events: {
+                input: {
+                    selection: (event) => {
+                        const selection = event.detail.selection.value;
+                        event.target.value = selection.name;
+                        console.log(`Selected ${fieldId}:`, selection.name);
+                    }
+                }
+            }
+        });
+    });
+
+    // Глобальная функция для инициализации карты
+    function initRouteMap(route, mapContainerId) {
+        const mapContainer = document.getElementById(mapContainerId);
+        if (!mapContainer) {
+            console.error('Map container not found:', mapContainerId);
+            return;
+        }
+
+        // Координаты автовокзалов и станций
+        const stationCoordinates = {
+            'Москва': {
+                name: 'Автостанция Саларьево',
+                coords: [55.623150, 37.424674],
+                address: 'пос. Московский, ул. Передельцевская, вл. 13'
+            },
+            'Казань': {
+                name: 'Центральный автовокзал Казань',
+                coords: [55.788794, 49.114187],
+                address: 'пр. Хасана Туфана, 5'
+            },
+            // Промежуточные остановки на трассе М7
+            'stops': [
+                {
+                    name: 'Владимир',
+                    coords: [56.129057, 40.406635],
+                    address: 'Автовокзал Владимир',
+                    time: '2 часа в пути',
+                    distance: '190 км'
+                },
+                {
+                    name: 'Нижний Новгород',
+                    coords: [56.323685, 44.006741],
+                    address: 'Автовокзал Щербинки',
+                    time: '5 часов в пути',
+                    distance: '420 км'
+                },
+                {
+                    name: 'Чебоксары',
+                    coords: [56.135935, 47.251860],
+                    address: 'Автовокзал Чебоксары',
+                    time: '8 часов в пути',
+                    distance: '640 км'
+                }
+            ]
+        };
+
+        // Получаем координаты станций
+        const departureStation = stationCoordinates[route.departure_city];
+        const arrivalStation = stationCoordinates[route.arrival_city];
+
+        // Создаем карту
+        ymaps.ready(() => {
+            try {
+                // Создаем карту с центром между станциями
+                const centerLat = (departureStation.coords[0] + arrivalStation.coords[0]) / 2;
+                const centerLng = (departureStation.coords[1] + arrivalStation.coords[1]) / 2;
+
+                const map = new ymaps.Map(mapContainerId, {
+                    center: [centerLat, centerLng],
+                    zoom: 7,
+                    controls: ['zoomControl']
+                });
+
+                // Создаем массив всех точек маршрута
+                const routePoints = [
+                    departureStation.coords,
+                    ...stationCoordinates.stops.map(stop => stop.coords),
+                    arrivalStation.coords
+                ];
+
+                // Создаем мультимаршрут через промежуточные точки
+                const multiRoute = new ymaps.multiRouter.MultiRoute({
+                    referencePoints: routePoints,
+                    params: {
+                        routingMode: 'auto', // автомобильный маршрут
+                        multiRoute: false, // строим только один маршрут
+                        avoidTrafficJams: false, // не учитываем пробки
+                        boundedBy: [[54.0, 36.0], [57.0, 50.0]], // ограничиваем область поиска маршрута
+                        strictBounds: false,
+                        // Настройки для движения по дорогам
+                        driving: {
+                            allowMultiRoute: false, // запрещаем альтернативные маршруты
+                            routingMode: 'shortest', // самый короткий маршрут
+                            avoidTolls: true // избегаем платных дорог
+                        }
+                    }
+                }, {
+                    // Внешний вид путевых точек
+                    wayPointStartIconColor: "#FF0000",
+                    wayPointStartIconFillColor: "#FF0000",
+                    wayPointFinishIconColor: "#FF0000",
+                    wayPointFinishIconFillColor: "#FF0000",
+                    // Внешний вид промежуточных точек
+                    viaPointIconRadius: 8,
+                    viaPointIconFillColor: "#FF0000",
+                    viaPointActiveIconFillColor: "#FF0000",
+                    // Внешний вид линии маршрута
+                    routeActiveStrokeColor: "#FF0000",
+                    routeActiveStrokeWidth: 8,
+                    routeStrokeStyle: 'solid',
+                    routeActiveStrokeStyle: 'solid',
+                    // Внешний вид линий альтернативных маршрутов
+                    routeStrokeStyle: 'solid',
+                    routeStrokeWidth: 6,
+                    // Автоматически устанавливать границы карты так, чтобы маршрут был виден целиком
+                    boundsAutoApply: true,
+                    // Дополнительные настройки для лучшей видимости
+                    routeActiveStrokeWidth: 8,
+                    routeActiveStrokeColor: "#FF0000",
+                    routeActiveStrokeStyle: 'solid',
+                    routeStrokeWidth: 6,
+                    routeStrokeColor: "#FF0000",
+                    routeStrokeStyle: 'solid',
+                    // Настройки для путевых точек
+                    wayPointStartIconLayout: 'default#image',
+                    wayPointStartIconImageHref: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png',
+                    wayPointStartIconImageSize: [32, 32],
+                    wayPointStartIconImageOffset: [-16, -16],
+                    // Настройки для промежуточных точек
+                    viaPointIconLayout: 'default#image',
+                    viaPointIconImageHref: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png',
+                    viaPointIconImageSize: [24, 24],
+                    viaPointIconImageOffset: [-12, -12]
+                });
+
+                // Добавляем маршрут на карту
+                map.geoObjects.add(multiRoute);
+
+                // Устанавливаем границы карты так, чтобы маршрут был виден целиком
+                multiRoute.model.events.add('requestsuccess', function() {
+                    const activeRoute = multiRoute.getActiveRoute();
+                    if (activeRoute) {
+                        const coordinates = activeRoute.geometry.getCoordinates();
+                        const distance = Math.round(activeRoute.properties.get("distance").value / 1000);
+                        const duration = Math.round(activeRoute.properties.get("duration").value / 60);
+
+                        // Устанавливаем границы карты
+                        map.setBounds(activeRoute.properties.get("boundedBy"), {
+                            checkZoomRange: true,
+                            zoomMargin: 50
+                        });
+
+                        // Добавляем информацию о маршруте
+                        const routeInfo = document.createElement('div');
+                        routeInfo.className = 'bg-white rounded-lg p-4 shadow-md mb-4';
+                        routeInfo.innerHTML = `
+                            <div class="text-lg font-semibold mb-2">Информация о маршруте по М7:</div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <div class="font-medium">Расстояние по дорогам:</div>
+                                    <div class="text-gray-600">${distance} км</div>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Время в пути:</div>
+                                    <div class="text-gray-600">${Math.floor(duration / 60)} ч ${duration % 60} мин</div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="font-medium mb-2">Остановки на маршруте:</div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                                        <div>${departureStation.name} (отправление)</div>
+                                    </div>
+                                    ${stationCoordinates.stops.map(stop => `
+                                        <div class="flex items-center">
+                                            <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                                            <div>${stop.name} (${stop.time}, ${stop.distance})</div>
+                                        </div>
+                                    `).join('')}
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                                        <div>${arrivalStation.name} (прибытие)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-sm text-gray-500">
+                                Маршрут проложен по федеральной трассе М7 "Волга"
+                            </div>
+                        `;
+                        mapContainer.parentNode.insertBefore(routeInfo, mapContainer);
+
+                        // Анимация движения автобуса по маршруту
+                        let currentPointIndex = 0;
+                        function moveBus() {
+                            if (currentPointIndex < coordinates.length) {
+                                busPlacemark.geometry.setCoordinates(coordinates[currentPointIndex]);
+                                currentPointIndex++;
+                                setTimeout(moveBus, 100);
+                            } else {
+                                currentPointIndex = 0;
+                                setTimeout(moveBus, 2000);
+                            }
+                        }
+
+                        moveBus();
+                    }
+                });
+
+            } catch (error) {
+                console.error('Ошибка инициализации карты:', error);
+                mapContainer.innerHTML = '<div class="text-center p-4 text-gray-500">Не удалось инициализировать карту</div>';
+            }
+        });
+    }
+
+    // Обновляем функцию отображения маршрутов
+    async function searchAvailableRoutes() {
+        const departureInput = document.getElementById('departure');
+        const arrivalInput = document.getElementById('arrival');
+        const dateInput = document.getElementById('date');
+        const routesList = document.querySelector('#tickets .grid');
+        
+        const departure = departureInput.value.trim();
+        const arrival = arrivalInput.value.trim();
+        const date = dateInput.value;
+
+        if (!departure || !arrival || !date) {
+            alert('Пожалуйста, заполните все поля');
+            return;
+        }
+
+        try {
+            console.log('Searching routes with:', { departure, arrival, date });
+            const routes = await searchRoutes(departure, arrival, date);
+            console.log('Routes found:', routes);
+
+            showTab('tickets');
+            
+            const ticketsTitle = document.querySelector('#tickets h2');
+            ticketsTitle.textContent = `${departure} → ${arrival} на ${formatDateForDisplay(date)}`;
+            
+            routesList.innerHTML = '';
+            
+            if (!routes || routes.length === 0) {
+                routesList.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <p class="text-gray-500 text-lg">На выбранную дату маршруты не найдены</p>
+                        <p class="text-gray-400 mt-2">Попробуйте выбрать другую дату</p>
+                    </div>
+                `;
+                return;
+            }
+
+            routes.forEach((route, index) => {
+                const routeCard = document.createElement('div');
+                routeCard.className = 'bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition-all duration-300';
+                const mapId = `routeMap_${index}`;
+                
+                routeCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-lg font-semibold">
+                                ${formatTime(route.departure_time)} → ${formatTime(route.arrival_time)}
+                            </div>
+                            <div class="text-sm text-gray-600 mt-1">${formatDateForDisplay(date)}</div>
+                        </div>
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                            ${route.available_seats > 0 ? 'В наличии' : 'Нет мест'}
+                        </span>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">В пути:</span>
+                            <span class="font-medium">${calculateTravelTime(route.departure_time, route.arrival_time)}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Свободных мест:</span>
+                            <span class="font-medium">${route.available_seats}</span>
+                        </div>
+                    </div>
+                    <div class="map-container" id="${mapId}"></div>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-2xl font-bold text-orange-600">${route.price} ₽</span>
+                        <button class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                            Купить билет
+                        </button>
+                    </div>
+                `;
+                
+                routesList.appendChild(routeCard);
+                
+                // Инициализируем карту после добавления карточки в DOM
+                initRouteMap(route, mapId);
+            });
+        } catch (error) {
+            console.error('Error searching routes:', error);
+            showTab('tickets');
+            routesList.innerHTML = '<div class="col-span-full text-center text-red-500 py-4">Произошла ошибка при поиске маршрутов</div>';
+        }
+    }
+
+    // Вспомогательная функция для форматирования даты для отображения
+    function formatDateForDisplay(dateString) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('ru-RU', options);
+    }
+    </script>
+</body>
+</html>

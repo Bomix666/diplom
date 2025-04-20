@@ -1,0 +1,158 @@
+[
+    {
+        "model": "api.city",
+        "pk": 1,
+        "fields": {
+            "name": "Москва",
+            "region": "Москва и Московская область"
+        }
+    },
+    {
+        "model": "api.city",
+        "pk": 2,
+        "fields": {
+            "name": "Санкт-Петербург",
+            "region": "Санкт-Петербург и Ленинградская область"
+        }
+    },
+    {
+        "model": "api.city",
+        "pk": 3,
+        "fields": {
+            "name": "Казань",
+            "region": "Республика Татарстан"
+        }
+    },
+    {
+        "model": "api.station",
+        "pk": 1,
+        "fields": {
+            "name": "Киевский вокзал",
+            "city": 1,
+            "address": "площадь Киевского Вокзала, 1"
+        }
+    },
+    {
+        "model": "api.station",
+        "pk": 2,
+        "fields": {
+            "name": "Казанский вокзал",
+            "city": 1,
+            "address": "Комсомольская площадь, 2"
+        }
+    },
+    {
+        "model": "api.station",
+        "pk": 3,
+        "fields": {
+            "name": "Московский вокзал",
+            "city": 2,
+            "address": "Невский проспект, 85"
+        }
+    },
+    {
+        "model": "api.station",
+        "pk": 4,
+        "fields": {
+            "name": "Центральный автовокзал",
+            "city": 3,
+            "address": "Девятаева, 15"
+        }
+    },
+    {
+        "model": "api.route",
+        "pk": 1,
+        "fields": {
+            "departure_station": 1,
+            "arrival_station": 3,
+            "departure_time": "2024-04-20T10:00:00Z",
+            "arrival_time": "2024-04-20T18:00:00Z",
+            "price": "2500.00",
+            "total_seats": 50,
+            "available_seats": 15,
+            "carrier": "РусТранс",
+            "bus_model": "Mercedes Travego",
+            "service_class": "Комфорт"
+        }
+    },
+    {
+        "model": "api.route",
+        "pk": 2,
+        "fields": {
+            "departure_station": 2,
+            "arrival_station": 4,
+            "departure_time": "2024-04-20T12:00:00Z",
+            "arrival_time": "2024-04-20T22:00:00Z",
+            "price": "3000.00",
+            "total_seats": 45,
+            "available_seats": 20,
+            "carrier": "ТатАвто",
+            "bus_model": "Setra S 517 HD",
+            "service_class": "Бизнес"
+        }
+    },
+    {
+        "model": "api.route",
+        "pk": 3,
+        "fields": {
+            "departure_station": 1,
+            "arrival_station": 2,
+            "departure_time": "2024-04-21T08:00:00Z",
+            "arrival_time": "2024-04-21T16:00:00Z",
+            "price": "2300.00",
+            "total_seats": 50,
+            "available_seats": 50,
+            "carrier": "ООО Трансфер",
+            "bus_model": "Mercedes Sprinter",
+            "service_class": "Комфорт"
+        }
+    },
+    {
+        "model": "api.route",
+        "pk": 4,
+        "fields": {
+            "departure_station": 1,
+            "arrival_station": 3,
+            "departure_time": "2024-04-21T14:00:00Z",
+            "arrival_time": "2024-04-22T00:00:00Z",
+            "price": "2800.00",
+            "total_seats": 45,
+            "available_seats": 45,
+            "carrier": "ТатАвто",
+            "bus_model": "Volvo 9700",
+            "service_class": "Стандарт"
+        }
+    },
+    {
+        "model": "api.route",
+        "pk": 5,
+        "fields": {
+            "departure_station": 1,
+            "arrival_station": 2,
+            "departure_time": "2024-05-01T09:00:00Z",
+            "arrival_time": "2024-05-01T17:00:00Z",
+            "price": "2700.00",
+            "total_seats": 50,
+            "available_seats": 50,
+            "carrier": "ООО Трансфер",
+            "bus_model": "Mercedes Sprinter",
+            "service_class": "Комфорт"
+        }
+    },
+    {
+        "model": "api.route",
+        "pk": 6,
+        "fields": {
+            "departure_station": 1,
+            "arrival_station": 3,
+            "departure_time": "2024-05-01T11:00:00Z",
+            "arrival_time": "2024-05-01T21:00:00Z",
+            "price": "3200.00",
+            "total_seats": 45,
+            "available_seats": 45,
+            "carrier": "ТатАвто",
+            "bus_model": "Volvo 9700",
+            "service_class": "Люкс"
+        }
+    }
+] 
