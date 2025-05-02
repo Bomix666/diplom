@@ -1,0 +1,60 @@
+{% extends 'api/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">Поиск билетов</h1>
+                <form action="{% url 'routes' %}" method="get" class="mb-4">
+                    <div class="mb-3">
+                        <label for="departure_city" class="form-label">Город отправления</label>
+                        <input type="text" class="form-control" id="departure_city" name="departure_city" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="arrival_city" class="form-label">Город прибытия</label>
+                        <input type="text" class="form-control" id="arrival_city" name="arrival_city" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Дата поездки</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Найти билеты
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-bus-alt fa-3x text-primary mb-3"></i>
+                <h3>Удобный поиск</h3>
+                <p>Быстрый и простой поиск билетов по всем направлениям</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-ticket-alt fa-3x text-primary mb-3"></i>
+                <h3>Онлайн бронирование</h3>
+                <p>Бронируйте билеты онлайн без очередей и ожидания</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                <h3>24/7 поддержка</h3>
+                <p>Служба поддержки доступна круглосуточно</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

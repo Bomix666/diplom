@@ -16,8 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from api.views import HomePageView, TicketsPageView, RoutesPageView, AboutPageView, ProfilePageView
 
 urlpatterns = [
+    path('', HomePageView.as_view(), name='home'),
+    path('tickets/', TicketsPageView.as_view(), name='tickets'),
+    path('routes/', RoutesPageView.as_view(), name='routes'),
+    path('about/', AboutPageView.as_view(), name='about'),
+    path('profile/', ProfilePageView.as_view(), name='profile'),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
 ]

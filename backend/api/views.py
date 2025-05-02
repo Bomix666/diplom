@@ -10,6 +10,50 @@ from .serializers import (
     CitySerializer, StationSerializer, RouteSerializer,
     TicketSerializer, UserSerializer
 )
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class HomePageView(TemplateView):
+    template_name = 'api/home.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Система бронирования билетов'
+        return context
+
+class TicketsPageView(LoginRequiredMixin, TemplateView):
+    template_name = 'api/tickets.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Мои билеты'
+        context['tickets'] = Ticket.objects.filter(user=self.request.user)
+        return context
+
+class RoutesPageView(TemplateView):
+    template_name = 'api/routes.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Маршруты'
+        context['routes'] = Route.objects.all()
+        return context
+
+class AboutPageView(TemplateView):
+    template_name = 'api/about.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'О нас'
+        return context
+
+class ProfilePageView(LoginRequiredMixin, TemplateView):
+    template_name = 'api/profile.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Профиль'
+        return context
 
 # Create your views here.
 
