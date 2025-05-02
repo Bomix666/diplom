@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from api.views import HomePageView, TicketsPageView, RoutesPageView, AboutPageView, ProfilePageView
+from django.contrib.auth import views as auth_views
+from django.views.generic.edit import CreateView
+from api.forms import CustomUserCreationForm
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home'),
@@ -26,4 +31,13 @@ urlpatterns = [
     path('profile/', ProfilePageView.as_view(), name='profile'),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='api/login.html'), name='login'),
+    path('accounts/register/', CreateView.as_view(
+        template_name='api/registration.html',
+        form_class=CustomUserCreationForm,
+        success_url='/accounts/login/'
+    ), name='register'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

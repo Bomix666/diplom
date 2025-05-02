@@ -1,17 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import Q
 from datetime import datetime
-from .models import City, Station, Route, Ticket
+from .models import City, Station, Route, Ticket, Profile
 from .serializers import (
     CitySerializer, StationSerializer, RouteSerializer,
     TicketSerializer, UserSerializer
 )
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.views import View
+from .forms import UserForm, ProfileForm
 
 class HomePageView(TemplateView):
     template_name = 'api/home.html'
@@ -47,13 +50,33 @@ class AboutPageView(TemplateView):
         context['title'] = 'О нас'
         return context
 
-class ProfilePageView(LoginRequiredMixin, TemplateView):
+class ProfilePageView(LoginRequiredMixin, View):
     template_name = 'api/profile.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Профиль'
-        return context
+
+    def get(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=profile)
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'title': 'Профиль',
+        })
+
+    def post(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, instance=profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Данные успешно обновлены!')
+            return redirect('profile')
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'title': 'Профиль',
+        })
 
 # Create your views here.
 
