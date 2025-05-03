@@ -1,0 +1,13 @@
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-lock
+*.sqlite3-trace
+*.sqlite3-wal
+*.sqlite3-journal
+*.sqlite3-lock
+
+venv
+.DS_Store
+
+__pycache__
+
