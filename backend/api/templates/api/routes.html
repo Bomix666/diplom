@@ -5,35 +5,37 @@
     <div class="col-12">
         <h1 class="mb-4">Маршруты</h1>
         
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm border-primary">
             <div class="card-body">
-                <form method="get" class="row g-3">
+                <form method="get" class="row g-3 align-items-end" id="search-form" autocomplete="off">
                     <div class="col-md-3">
                         <label for="departure_city" class="form-label">Откуда</label>
-                        <input type="text" class="form-control" id="departure_city" name="departure_city" value="{{ request.GET.departure_city }}">
+                        <input type="text" class="form-control" id="departure_city" name="departure_city" value="{{ request.GET.departure_city }}" placeholder="Введите город отправления..." list="cities-list">
                     </div>
                     <div class="col-md-3">
                         <label for="arrival_city" class="form-label">Куда</label>
-                        <input type="text" class="form-control" id="arrival_city" name="arrival_city" value="{{ request.GET.arrival_city }}">
+                        <input type="text" class="form-control" id="arrival_city" name="arrival_city" value="{{ request.GET.arrival_city }}" placeholder="Введите город прибытия..." list="cities-list">
                     </div>
                     <div class="col-md-3">
                         <label for="date" class="form-label">Дата</label>
                         <input type="date" class="form-control" id="date" name="date" value="{{ request.GET.date }}">
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">&nbsp;</label>
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="fas fa-search me-2"></i>Найти
+                    <div class="col-md-3 d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="search-btn">
+                            <span id="search-btn-text"><i class="fas fa-search me-2"></i>Найти</span>
+                            <span id="search-btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         </button>
                     </div>
+                    <datalist id="cities-list"></datalist>
                 </form>
             </div>
         </div>
 
+        <div id="results">
         {% if routes %}
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
+        <div class="table-responsive animate__animated animate__fadeIn">
+            <table class="table table-hover align-middle">
+                <thead class="table-primary">
                     <tr>
                         <th>Маршрут</th>
                         <th>Отправление</th>
@@ -49,21 +51,29 @@
                     <tr>
                         <td>
                             <strong>{{ route.departure_station.city.name }}</strong>
-                            <i class="fas fa-arrow-right mx-2"></i>
+                            <i class="fas fa-arrow-right mx-2 text-primary"></i>
                             <strong>{{ route.arrival_station.city.name }}</strong>
                         </td>
                         <td>
-                            {{ route.departure_time|date:"d.m.Y H:i" }}<br>
+                            <span class="fw-bold">{{ route.departure_time|date:"d.m.Y H:i" }}</span><br>
                             <small class="text-muted">{{ route.departure_station.name }}</small>
                         </td>
                         <td>
-                            {{ route.arrival_time|date:"d.m.Y H:i" }}<br>
+                            <span class="fw-bold">{{ route.arrival_time|date:"d.m.Y H:i" }}</span><br>
                             <small class="text-muted">{{ route.arrival_station.name }}</small>
                         </td>
-                        <td>{{ route.price }} ₽</td>
-                        <td>{{ route.available_seats }} из {{ route.total_seats }}</td>
                         <td>
-                            {{ route.carrier }}<br>
+                            {% if route.available_seats <= 10 %}
+                                <span class="badge bg-danger fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Цена выше из-за малого количества мест!"><i class="fas fa-exclamation-triangle me-1"></i>{{ route.price }} ₽</span>
+                            {% elif route.available_seats <= 20 %}
+                                <span class="badge bg-warning text-dark fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Осталось мало мест, цена выше обычной!"><i class="fas fa-info-circle me-1"></i>{{ route.price }} ₽</span>
+                            {% else %}
+                                <span class="badge bg-success fs-6">{{ route.price }} ₽</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge bg-info text-dark fs-6">{{ route.available_seats }} из {{ route.total_seats }}</span></td>
+                        <td>
+                            <span class="fw-semibold">{{ route.carrier }}</span><br>
                             <small class="text-muted">{{ route.bus_model }}</small>
                         </td>
                         <td>
@@ -81,7 +91,7 @@
             </table>
         </div>
         {% else %}
-        <div class="alert alert-info">
+        <div class="alert alert-info animate__animated animate__fadeIn">
             <i class="fas fa-info-circle me-2"></i>
             {% if request.GET %}
             По вашему запросу маршрутов не найдено
@@ -90,6 +100,61 @@
             {% endif %}
         </div>
         {% endif %}
+        </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
+<script>
+// Анимация кнопки поиска
+const searchForm = document.getElementById('search-form');
+const searchBtn = document.getElementById('search-btn');
+const searchBtnText = document.getElementById('search-btn-text');
+const searchBtnSpinner = document.getElementById('search-btn-spinner');
+
+searchForm.addEventListener('submit', function() {
+    searchBtnText.classList.add('d-none');
+    searchBtnSpinner.classList.remove('d-none');
+});
+
+// Автозаполнение городов
+function fetchCities(query, callback) {
+    if (!query || query.length < 2) return;
+    fetch(`/api/cities/search/?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            callback(data.map(city => city.name));
+        });
+}
+
+function setupAutocomplete(inputId) {
+    const input = document.getElementById(inputId);
+    const datalist = document.getElementById('cities-list');
+    input.addEventListener('input', function() {
+        fetchCities(this.value, function(cities) {
+            datalist.innerHTML = '';
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                datalist.appendChild(option);
+            });
+        });
+    });
+}
+setupAutocomplete('departure_city');
+setupAutocomplete('arrival_city');
+
+// Плавная прокрутка к результатам
+searchForm.addEventListener('submit', function(e) {
+    setTimeout(function() {
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }, 500);
+});
+
+// Инициализация Bootstrap tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+</script>
 {% endblock %} 
