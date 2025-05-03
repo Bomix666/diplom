@@ -11,6 +11,10 @@
                 <h3>{{ user.get_full_name|default:user.username }}</h3>
                 <p class="text-muted">{{ user.email }}</p>
                 <hr>
+                <div class="mb-3">
+                    <span class="fw-bold">Баланс:</span>
+                    <span class="badge bg-success fs-5">{{ profile.balance }} ₽</span>
+                </div>
                 <div class="d-grid">
                     <a href="#" class="btn btn-outline-primary mb-2">
                         <i class="fas fa-edit me-2"></i>Редактировать профиль

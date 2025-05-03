@@ -63,7 +63,9 @@
                             <small class="text-muted">{{ route.arrival_station.name }}</small>
                         </td>
                         <td>
-                            {% if route.available_seats <= 10 %}
+                            {% if route.available_seats == 0 %}
+                                <span class="badge bg-danger fs-6">{{ route.price }} ₽</span>
+                            {% elif route.available_seats <= 10 %}
                                 <span class="badge bg-danger fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Цена выше из-за малого количества мест!"><i class="fas fa-exclamation-triangle me-1"></i>{{ route.price }} ₽</span>
                             {% elif route.available_seats <= 20 %}
                                 <span class="badge bg-warning text-dark fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Осталось мало мест, цена выше обычной!"><i class="fas fa-info-circle me-1"></i>{{ route.price }} ₽</span>
@@ -71,7 +73,13 @@
                                 <span class="badge bg-success fs-6">{{ route.price }} ₽</span>
                             {% endif %}
                         </td>
-                        <td><span class="badge bg-info text-dark fs-6">{{ route.available_seats }} из {{ route.total_seats }}</span></td>
+                        <td>
+                            {% if route.available_seats == 0 %}
+                                <span class="badge bg-danger fs-6">0 из {{ route.total_seats }}</span>
+                            {% else %}
+                                <span class="badge bg-info text-dark fs-6">{{ route.available_seats }} из {{ route.total_seats }}</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <span class="fw-semibold">{{ route.carrier }}</span><br>
                             <small class="text-muted">{{ route.bus_model }}</small>

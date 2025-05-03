@@ -70,6 +70,7 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, self.template_name, {
             'user_form': user_form,
             'profile_form': profile_form,
+            'profile': profile,
             'title': 'Профиль',
         })
 
@@ -85,6 +86,7 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, self.template_name, {
             'user_form': user_form,
             'profile_form': profile_form,
+            'profile': profile,
             'title': 'Профиль',
         })
 

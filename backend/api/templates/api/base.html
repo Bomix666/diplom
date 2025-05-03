@@ -52,21 +52,8 @@
                         </a>
                     </li>
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile' %}">
-                            <i class="fas fa-user me-1"></i>Профиль
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">
-                            <i class="fas fa-sign-out-alt me-1"></i>Выход
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">
-                            <i class="fas fa-sign-in-alt me-1"></i>Вход
-                        </a>
+                    <li class="nav-item d-flex align-items-center ms-3">
+                        <span class="badge bg-success fs-6"><i class="fas fa-wallet me-1"></i>{{ user.profile.balance }} ₽</span>
                     </li>
                     {% endif %}
                 </ul>
