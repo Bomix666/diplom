@@ -39,7 +39,17 @@ class RoutesPageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Маршруты'
-        context['routes'] = Route.objects.all()
+        routes = Route.objects.all()
+        departure_city = self.request.GET.get('departure_city')
+        arrival_city = self.request.GET.get('arrival_city')
+        date = self.request.GET.get('date')
+        if departure_city:
+            routes = routes.filter(departure_station__city__name__icontains=departure_city)
+        if arrival_city:
+            routes = routes.filter(arrival_station__city__name__icontains=arrival_city)
+        if date:
+            routes = routes.filter(departure_time__date=date)
+        context['routes'] = routes
         return context
 
 class AboutPageView(TemplateView):
@@ -60,6 +70,7 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, self.template_name, {
             'user_form': user_form,
             'profile_form': profile_form,
+            'profile': profile,
             'title': 'Профиль',
         })
 
@@ -75,6 +86,7 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, self.template_name, {
             'user_form': user_form,
             'profile_form': profile_form,
+            'profile': profile,
             'title': 'Профиль',
         })
 

@@ -67,6 +67,8 @@
                         <a class="nav-link" href="{% url 'login' %}">
                             <i class="fas fa-sign-in-alt me-1"></i>Вход
                         </a>
+                    <li class="nav-item d-flex align-items-center ms-3">
+                        <span class="badge bg-success fs-6"><i class="fas fa-wallet me-1"></i>{{ user.profile.balance }} ₽</span>
                     </li>
                     {% endif %}
                 </ul>
