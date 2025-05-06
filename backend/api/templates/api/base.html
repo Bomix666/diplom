@@ -1,22 +1,75 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'api/custom.css' %}" rel="stylesheet">
     <style>
-        .navbar-brand {
-            font-weight: bold;
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: #f6f8fa;
+            color: #222;
         }
-        .nav-link {
-            font-size: 1.1em;
+        .navbar {
+            background: linear-gradient(90deg, #b2e0e6 0%, #e0eafc 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .navbar-brand, .nav-link {
+            color: #2d3a4a !important;
+        }
+        .card {
+            border-radius: 18px;
+            box-shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.08);
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+            border: none;
+            color: #234;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: box-shadow 0.2s, background 0.2s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
+            box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.12);
+        }
+        .table-primary {
+            background: #e0eafc;
+        }
+        .badge {
+            border-radius: 8px;
+            font-size: 1em;
         }
         .footer {
-            margin-top: 3rem;
-            padding: 2rem 0;
-            background-color: #f8f9fa;
+            background: #e0eafc;
+            color: #6c757d;
+            border-top: 1px solid #dbeafe;
+        }
+        .parallax {
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80');
+            min-height: 320px;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 18px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.12);
+        }
+        .parallax h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.18);
         }
     </style>
 </head>
@@ -116,5 +169,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'api/custom.js' %}"></script>
 </body>
 </html> 

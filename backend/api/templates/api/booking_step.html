@@ -1,0 +1,156 @@
+{% extends 'api/base.html' %}
+{% block content %}
+<style>
+    .card {
+        background: #fafdff;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.08);
+        border: none;
+        transition: box-shadow 0.2s;
+    }
+    .card:hover {
+        box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.14);
+    }
+    .btn-primary, .btn-success {
+        background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+        border: none;
+        color: #234;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: box-shadow 0.2s, background 0.2s;
+    }
+    .btn-primary:hover, .btn-success:hover {
+        background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
+        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.12);
+    }
+    .booking-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 2rem;
+        gap: 1.5rem;
+    }
+    .booking-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-weight: 600;
+        color: #b2b8c6;
+        transition: color 0.3s;
+    }
+    .booking-step.active {
+        color: #2d3a4a;
+    }
+    .booking-step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #e0eafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+        margin-bottom: 0.3em;
+        border: 2px solid #b2e0e6;
+        transition: background 0.3s, border 0.3s;
+    }
+    .booking-step.active .booking-step-circle {
+        background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+        border: 2px solid #7fd7e7;
+        color: #234;
+    }
+    .booking-step-line {
+        width: 48px;
+        height: 4px;
+        background: #e0eafc;
+        border-radius: 2px;
+        margin: 0 0.5em;
+    }
+    .fade-step {
+        animation: fadeInStep 0.5s;
+    }
+    @keyframes fadeInStep {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+<div class="booking-steps">
+    <div class="booking-step {% if step == '1' %}active{% endif %}">
+        <div class="booking-step-circle">1</div>
+        <span>Место и тип</span>
+    </div>
+    <div class="booking-step-line"></div>
+    <div class="booking-step {% if step == '2' %}active{% endif %}">
+        <div class="booking-step-circle">2</div>
+        <span>Пассажир</span>
+    </div>
+    <div class="booking-step-line"></div>
+    <div class="booking-step {% if step == '3' %}active{% endif %}">
+        <div class="booking-step-circle">3</div>
+        <span>Подтверждение</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card mt-4">
+            <div class="card-body">
+                <h2 class="mb-4">Бронирование билета</h2>
+                <form method="post" id="booking-form">
+                    {% csrf_token %}
+                    {% if step == '1' %}
+                        <input type="hidden" name="step" value="1">
+                        <input type="hidden" name="route_id" value="{{ route_id }}">
+                        <div class="mb-3">
+                            <label for="ticket_type" class="form-label">Тип билета</label>
+                            <select class="form-control" name="ticket_type" id="ticket_type">
+                                <option value="adult">Взрослый</option>
+                                <option value="discount">Льготный</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="seat_number" class="form-label">Место</label>
+                            <input type="number" class="form-control" name="seat_number" id="seat_number" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Далее</button>
+                    {% elif step == '2' %}
+                        <input type="hidden" name="step" value="2">
+                        <div class="mb-3">
+                            <label for="passenger_name" class="form-label">ФИО пассажира</label>
+                            <input type="text" class="form-control" name="passenger_name" id="passenger_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passenger_birth" class="form-label">Дата рождения</label>
+                            <input type="date" class="form-control" name="passenger_birth" id="passenger_birth" required>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="is_discount" id="is_discount" value="1">
+                            <label class="form-check-label" for="is_discount">Льготный билет</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Далее</button>
+                    {% elif step == '3' %}
+                        <input type="hidden" name="step" value="3">
+                        <h5>Проверьте данные перед подтверждением:</h5>
+                        <ul>
+                            <li>Тип билета: {{ request.session.booking.ticket_type }}</li>
+                            <li>Место: {{ request.session.booking.seat_number }}</li>
+                            <li>ФИО: {{ request.session.booking.passenger_name }}</li>
+                            <li>Дата рождения: {{ request.session.booking.passenger_birth }}</li>
+                            <li>Льготный: {{ request.session.booking.is_discount|yesno:"Да,Нет" }}</li>
+                        </ul>
+                        <button type="submit" class="btn btn-success">Подтвердить бронирование</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Плавная анимация перехода между шагами
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('booking-form');
+        if (form) {
+            form.classList.add('fade-step');
+        }
+    });
+</script>
+{% endblock %} 

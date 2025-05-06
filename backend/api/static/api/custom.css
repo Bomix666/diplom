@@ -1,0 +1,159 @@
+/* Мягкий navbar */
+.navbar {
+    background: linear-gradient(90deg, #b2e0e6 0%, #e0eafc 100%) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Анимация выпадения карточек билетов */
+.ticket-card {
+    background: #eaf6fb;
+    border: 1.5px solid #b2e0e6;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: ticketFadeIn 0.9s cubic-bezier(.4,1.4,.6,1) forwards;
+    transition: opacity 0.6s, transform 0.6s, box-shadow 0.2s;
+}
+.ticket-card.removing {
+    opacity: 0;
+    transform: translateY(60px) scale(0.98);
+    pointer-events: none;
+}
+@keyframes ticketFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Кнопка отмены */
+.btn-cancel {
+    background: #e0eafc;
+    color: #2d3a4a;
+    border: none;
+    border-radius: 10px;
+    transition: background 0.2s, color 0.2s;
+}
+.btn-cancel:hover {
+    background: #b2e0e6;
+    color: #b71c1c;
+}
+
+.profile-card {
+    background: #fafdff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.10);
+    border: 1.5px solid #b2e0e6;
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+    animation: fadeInProfile 0.8s cubic-bezier(.4,1.4,.6,1);
+}
+@keyframes fadeInProfile {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #e0eafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.2rem;
+    color: #7fd7e7;
+    margin: 0 auto 1rem auto;
+    box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.10);
+}
+.profile-balance {
+    font-size: 1.2em;
+    font-weight: 600;
+    background: #e0f7e9;
+    color: #1b7e4b;
+    border-radius: 8px;
+    padding: 0.2em 0.8em;
+    display: inline-block;
+    margin-bottom: 1em;
+}
+.profile-btn {
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    color: #234;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: box-shadow 0.2s, background 0.2s;
+}
+.profile-btn:hover {
+    background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
+    box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.12);
+}
+.profile-tabs {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e0eafc;
+}
+.profile-tab {
+    padding: 0.7em 1.5em;
+    cursor: pointer;
+    font-weight: 600;
+    color: #b2b8c6;
+    border: none;
+    background: none;
+    border-radius: 12px 12px 0 0;
+    transition: color 0.2s, background 0.2s;
+}
+.profile-tab.active {
+    color: #2d3a4a;
+    background: #e0eafc;
+}
+.profile-card form {
+    background: none;
+    padding: 0;
+    border: none;
+}
+.profile-card .form-label {
+    font-weight: 600;
+    color: #2d3a4a;
+    margin-bottom: 0.3em;
+}
+.profile-card input[type="text"],
+.profile-card input[type="email"],
+.profile-card input[type="date"],
+.profile-card input[type="password"] {
+    width: 100%;
+    padding: 0.7em 1em;
+    border-radius: 12px;
+    border: 1.5px solid #b2e0e6;
+    background: #f6f8fa;
+    font-size: 1.1em;
+    margin-bottom: 1.1em;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px 0 rgba(80, 120, 200, 0.04);
+}
+.profile-card input[type="text"]:focus,
+.profile-card input[type="email"]:focus,
+.profile-card input[type="date"]:focus,
+.profile-card input[type="password"]:focus {
+    border: 1.5px solid #7fd7e7;
+    outline: none;
+    background: #eaf6fb;
+    box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.10);
+}
+.profile-card .btn.profile-btn {
+    font-size: 1.2em;
+    padding: 0.8em 0;
+    margin-top: 1.2em;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+}
+@media (max-width: 900px) {
+    .profile-card {
+        padding: 1.2rem 0.7rem;
+    }
+    .profile-card form .row > div {
+        margin-bottom: 1em;
+    }
+} 

@@ -86,8 +86,8 @@
                         </td>
                         <td>
                             {% if route.available_seats > 0 %}
-                            <a href="{% url 'tickets' %}?route_id={{ route.id }}" class="btn btn-primary btn-sm">
-                                <i class="fas fa-ticket-alt me-1"></i>Купить билет
+                            <a href="{% url 'booking' %}?route_id={{ route.id }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-ticket-alt me-1"></i>Забронировать билет
                             </a>
                             {% else %}
                             <button class="btn btn-secondary btn-sm" disabled>Нет мест</button>
@@ -165,4 +165,40 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl);
 });
 </script>
+
+<style>
+    .table thead th {
+        background: #e0eafc;
+        color: #2d3a4a;
+        font-weight: 600;
+        font-size: 1.1em;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+    .table tbody tr {
+        transition: box-shadow 0.2s, background 0.2s;
+    }
+    .table tbody tr:hover {
+        background: #f6f8fa;
+        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.08);
+    }
+    .badge.bg-success, .badge.bg-info, .badge.bg-warning, .badge.bg-danger {
+        font-size: 1em;
+        padding: 0.5em 1em;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.08);
+    }
+    .btn-primary {
+        background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+        border: none;
+        color: #234;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: box-shadow 0.2s, background 0.2s;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
+        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.12);
+    }
+</style>
 {% endblock %} 

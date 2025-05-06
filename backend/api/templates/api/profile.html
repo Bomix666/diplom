@@ -2,105 +2,63 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <div class="mb-3">
-                    <i class="fas fa-user-circle fa-5x text-primary"></i>
-                </div>
-                <h3>{{ user.get_full_name|default:user.username }}</h3>
-                <p class="text-muted">{{ user.email }}</p>
-                <hr>
-                <div class="mb-3">
-                    <span class="fw-bold">Баланс:</span>
-                    <span class="badge bg-success fs-5">{{ profile.balance }} ₽</span>
-                </div>
-                <div class="d-grid">
-                    <a href="#" class="btn btn-outline-primary mb-2">
-                        <i class="fas fa-edit me-2"></i>Редактировать профиль
-                    </a>
-                    <a href="#" class="btn btn-outline-secondary">
-                        <i class="fas fa-key me-2"></i>Изменить пароль
-                    </a>
-                </div>
+    <div class="col-md-4">
+        <div class="profile-card text-center">
+            <div class="profile-avatar mb-2">
+                <i class="fas fa-user-circle"></i>
             </div>
+            <h2 class="mb-1">{{ user.username }}</h2>
+            <div class="mb-2 text-muted">{{ user.email }}</div>
+            <div class="profile-balance mb-3">Баланс: {{ profile.balance|default:"0.00" }} ₽</div>
+            <a href="#" class="btn profile-btn w-100 mb-2">✏️ Редактировать профиль</a>
+            <a href="#" class="btn btn-outline-secondary w-100">🔑 Изменить пароль</a>
         </div>
     </div>
-
     <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">Статистика</h4>
+        <div class="profile-card">
+            <div class="profile-tabs">
+                <button class="profile-tab active" type="button">Всего билетов</button>
+                <button class="profile-tab" type="button">Активные билеты</button>
+                <button class="profile-tab" type="button">Завершённые поездки</button>
             </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-4">
-                        <h2 class="text-primary">{{ tickets.count }}</h2>
-                        <p class="text-muted mb-0">Всего билетов</p>
-                    </div>
-                    <div class="col-4">
-                        <h2 class="text-success">{{ tickets.active.count }}</h2>
-                        <p class="text-muted mb-0">Активные билеты</p>
-                    </div>
-                    <div class="col-4">
-                        <h2 class="text-info">{{ tickets.completed.count }}</h2>
-                        <p class="text-muted mb-0">Завершенные поездки</p>
-                    </div>
-                </div>
+            <div class="profile-stats-content" style="display:block;">
+                <h4>Всего билетов: {{ tickets.count }}</h4>
+            </div>
+            <div class="profile-stats-content" style="display:none;">
+                <h4>Активные билеты: {{ tickets.active.count }}</h4>
+            </div>
+            <div class="profile-stats-content" style="display:none;">
+                <h4>Завершённые поездки: {{ tickets.completed.count }}</h4>
             </div>
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h4 class="mb-0">Личные данные</h4>
-            </div>
-            <div class="card-body">
-                {% if messages %}
-                  {% for message in messages %}
-                    <div class="alert alert-success">{{ message }}</div>
-                  {% endfor %}
-                {% endif %}
-                <form method="post" novalidate>
-                    {% csrf_token %}
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            {{ user_form.first_name.label_tag }}{{ user_form.first_name }}
-                            {% for error in user_form.first_name.errors %}
-                              <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        <div class="col-md-6">
-                            {{ user_form.last_name.label_tag }}{{ user_form.last_name }}
-                            {% for error in user_form.last_name.errors %}
-                              <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
-                        </div>
+        <div class="profile-card">
+            <h4 class="mb-3">Личные данные</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_first_name" class="form-label">Имя:</label>
+                        {{ user_form.first_name }}
                     </div>
-                    <div class="mb-3">
-                        {{ user_form.email.label_tag }}{{ user_form.email }}
-                        {% for error in user_form.email.errors %}
-                          <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
+                    <div class="col-md-6">
+                        <label for="id_last_name" class="form-label">Фамилия:</label>
+                        {{ user_form.last_name }}
                     </div>
-                    <div class="mb-3">
-                        {{ profile_form.phone.label_tag }}{{ profile_form.phone }}
-                        {% for error in profile_form.phone.errors %}
-                          <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="mb-3">
-                        {{ profile_form.birth_date.label_tag }}{{ profile_form.birth_date }}
-                        {% for error in profile_form.birth_date.errors %}
-                          <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Сохранить изменения
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email:</label>
+                    {{ user_form.email }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_phone" class="form-label">Телефон:</label>
+                    {{ profile_form.phone }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_birth_date" class="form-label">Дата рождения:</label>
+                    {{ profile_form.birth_date }}
+                </div>
+                <button type="submit" class="btn profile-btn w-100">💾 Сохранить изменения</button>
+            </form>
         </div>
     </div>
 </div>
