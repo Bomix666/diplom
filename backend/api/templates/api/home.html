@@ -1,39 +1,276 @@
 {% extends 'api/base.html' %}
 
-{% block content %}
+{% block navbar %}
 <style>
-    .parallax-search-form .form-control {
-        min-width: 180px;
-        font-size: 1.1em;
-        padding: 0.75em 1em;
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.06);
-    }
-    .parallax-search-form .btn {
-        min-width: 56px;
-        font-size: 1.3em;
-        border-radius: 12px;
-    }
-    .feature-icon {
-        color: #7fd7e7;
-        background: #e0eafc;
-        border-radius: 50%;
-        width: 56px;
-        height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem auto;
-        font-size: 2.2em;
-        box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.08);
-    }
+.wow-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(90deg, #e0eafc 0%, #b2e0e6 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.18), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    animation: fadeInNavbar 0.7s cubic-bezier(.4,1.4,.6,1);
+    border-radius: 0 0 22px 22px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.theme-dark .wow-navbar {
+    background: linear-gradient(90deg, #181c24 0%, #232a36 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.28), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+}
+.wow-navbar .navbar-brand {
+    color: #1a2a3a !important;
+    font-weight: 800;
+    font-size: 1.5em;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.08);
+    transition: color 0.2s;
+}
+.theme-dark .wow-navbar .navbar-brand {
+    color: #7fd7e7 !important;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.18);
+}
+.wow-navbar .nav-link {
+    color: #1a2a3a !important;
+    font-weight: 600;
+    font-size: 1.13em;
+    margin-left: 0.7em;
+    margin-right: 0.2em;
+    letter-spacing: 0.2px;
+    transition: color 0.18s, text-shadow 0.18s;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.07);
+    border-radius: 8px;
+    padding: 0.45em 1em;
+}
+.theme-dark .wow-navbar .nav-link {
+    color: #e0eafc !important;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.13);
+}
+.wow-navbar .nav-link.active, .wow-navbar .nav-link:focus, .wow-navbar .nav-link:hover {
+    color: #fff !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    box-shadow: 0 2px 12px 0 rgba(127,215,231,0.13);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.theme-dark .wow-navbar .nav-link.active, .theme-dark .wow-navbar .nav-link:focus, .theme-dark .wow-navbar .nav-link:hover {
+    color: #181c24 !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.wow-navbar .navbar-toggler {
+    border: none;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+.wow-navbar i {
+    font-size: 1.25em;
+    margin-right: 0.3em;
+    color: #7fd7e7;
+    filter: drop-shadow(0 1px 4px #b2e0e6);
+    transition: color 0.2s;
+}
+.wow-navbar .nav-link.active i, .wow-navbar .nav-link:focus i, .wow-navbar .nav-link:hover i {
+    color: #fff;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+@media (max-width: 900px) {
+    .wow-navbar { border-radius: 0 0 14px 14px; }
+    .wow-navbar .navbar-brand { font-size: 1.1em; }
+    .wow-navbar .nav-link { font-size: 1em; padding: 0.4em 0.7em; }
+}
+.home-bg, .home-bg2, .home-bg3 {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0;
+    will-change: transform;
+    pointer-events: none;
+}
+.home-bg {
+    background: linear-gradient(270deg, #e0eafc, #b2e0e6, #f3eaff, #e0f7e9, #e0eafc);
+    background-size: 400% 400%;
+    animation: gradientFlow 13s ease-in-out infinite;
+    opacity: 1;
+    transition: opacity 0.5s;
+    filter: blur(2px);
+}
+.home-bg2 {
+    background: url('https://svgshare.com/i/14kA.svg') repeat-x bottom center;
+    background-size: cover;
+    opacity: 0.22;
+    animation: waveMove 18s linear infinite;
+    filter: blur(0.5px);
+}
+.home-bg3 {
+    background: url('https://svgshare.com/i/14kB.svg') repeat-x top center;
+    background-size: cover;
+    opacity: 0.13;
+    animation: waveMove2 22s linear infinite;
+    filter: blur(1.5px);
+}
+@keyframes gradientFlow {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+@keyframes waveMove {
+    0% {background-position-x: 0;}
+    100% {background-position-x: 1000px;}
+}
+@keyframes waveMove2 {
+    0% {background-position-x: 0;}
+    100% {background-position-x: -1200px;}
+}
+.home-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    animation: fadeInPage 1.2s cubic-bezier(.4,1.4,.6,1);
+    padding-top: 5.5rem;
+    padding-bottom: 2.5rem;
+}
+@keyframes fadeInPage {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.home-title {
+    font-weight: 900;
+    font-size: 2.7rem;
+    letter-spacing: -1.5px;
+    text-align: center;
+    margin-bottom: 1.2rem;
+    color: #181c24;
+    text-shadow: 0 2px 12px #e0eafc;
+}
+.theme-dark .home-title {
+    color: #e0eafc;
+    text-shadow: 0 2px 12px #232a36;
+}
+.home-lead {
+    color: #7fd7e7;
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 2.2rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+.home-search-form {
+    max-width: 900px;
+    margin: 0 auto 2.5rem auto;
+    background: rgba(255,255,255,0.93);
+    border-radius: 22px;
+    box-shadow: 0 4px 24px 0 rgba(80,120,200,0.10);
+    padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 1.1s cubic-bezier(.4,1.4,.6,1);
+}
+.theme-dark .home-search-form {
+    background: rgba(24,28,36,0.98);
+}
+.home-search-form .form-control {
+    min-width: 180px;
+    font-size: 1.1em;
+    padding: 0.75em 1em;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.06);
+}
+.home-search-form .btn {
+    min-width: 56px;
+    font-size: 1.3em;
+    border-radius: 12px;
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(60px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.home-features {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.home-feature-card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.18);
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    min-width: 260px;
+    max-width: 340px;
+    flex: 1 1 260px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1.2s cubic-bezier(.4,1.4,.6,1);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.home-feature-card:hover {
+    box-shadow: 0 16px 48px 0 rgba(127,215,231,0.18);
+    transform: translateY(-4px) scale(1.012);
+}
+.theme-dark .home-feature-card {
+    background: rgba(24,28,36,0.98);
+    color: #e0eafc;
+}
+.home-feature-icon {
+    color: #7fd7e7;
+    background: #e0eafc;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem auto;
+    font-size: 2.2em;
+    box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.08);
+}
+@media (max-width: 900px) {
+    .home-container { padding-top: 2.5rem; }
+    .home-feature-card { padding: 1rem 0.5rem; }
+}
 </style>
-<div class="parallax mb-5">
-    <div class="text-center w-100">
-        <h1>Путешествуй легко и удобно!</h1>
-        <p class="lead mt-3 mb-4" style="color:#e0eafc; font-size:1.3rem;">Онлайн-бронирование билетов по всей России</p>
-        <form action="{% url 'routes' %}" method="get" class="row justify-content-center g-2 parallax-search-form" style="max-width:900px;margin:auto;">
+<nav class="navbar navbar-expand-lg wow-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle me-1"></i>О нас</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'routes' %}"><i class="fas fa-route me-1"></i>Маршруты</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'tickets' %}"><i class="fas fa-ticket-alt me-1"></i>Мои билеты</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Профиль</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://127.0.0.1:8000/accounts/register/"><i class="fas fa-sign-out-alt me-1"></i>Выход</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Вход</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="home-bg" id="home-bg"></div>
+<div class="home-bg2" id="home-bg2"></div>
+<div class="home-bg3" id="home-bg3"></div>
+<div class="home-container">
+    <div style="width:100%;max-width:1100px;">
+        <div class="home-title">Путешествуй легко и удобно!</div>
+        <div class="home-lead">Онлайн-бронирование билетов по всей России</div>
+        <form action="{% url 'routes' %}" method="get" class="row justify-content-center g-2 home-search-form">
             <div class="col-md-4">
                 <input type="text" class="form-control form-control-lg" name="departure_city" placeholder="Город отправления" required>
             </div>
@@ -47,36 +284,41 @@
                 <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-search"></i></button>
             </div>
         </form>
-    </div>
-</div>
-
-<div class="row mt-5">
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <div class="feature-icon"><i class="fas fa-bus-alt"></i></div>
+        <div class="home-features">
+            <div class="home-feature-card">
+                <div class="home-feature-icon"><i class="fas fa-bus-alt"></i></div>
                 <h3>Удобный поиск</h3>
                 <p>Быстрый и простой поиск билетов по всем направлениям</p>
             </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <div class="feature-icon"><i class="fas fa-ticket-alt"></i></div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon"><i class="fas fa-ticket-alt"></i></div>
                 <h3>Онлайн бронирование</h3>
                 <p>Бронируйте билеты онлайн без очередей и ожидания</p>
             </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <div class="feature-icon"><i class="fas fa-clock"></i></div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon"><i class="fas fa-clock"></i></div>
                 <h3>24/7 поддержка</h3>
                 <p>Служба поддержки доступна круглосуточно</p>
             </div>
         </div>
     </div>
 </div>
+<script>
+// Parallax effect
+const homeBg = document.getElementById('home-bg');
+const homeBg2 = document.getElementById('home-bg2');
+const homeBg3 = document.getElementById('home-bg3');
+document.addEventListener('mousemove', function(e) {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    homeBg.style.transform = `translate(${x}px, ${y}px) scale(1.03)`;
+    homeBg2.style.transform = `translate(${x/2}px, ${y/2}px) scale(1.01)`;
+    homeBg3.style.transform = `translate(${x/3}px, ${y/3}px) scale(1.01)`;
+});
+document.addEventListener('mouseleave', function() {
+    homeBg.style.transform = '';
+    homeBg2.style.transform = '';
+    homeBg3.style.transform = '';
+});
+</script>
 {% endblock %} 

@@ -1,5 +1,8 @@
 {% extends "api/base.html" %}
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
 {% block content %}
+{% with hide_navbar=True %}
 <style>
     html, body { height: 100%; margin: 0; }
     body.theme-dark {
@@ -294,4 +297,5 @@ inputs.forEach(input => {
     });
 });
 </script>
+{% endwith %}
 {% endblock %} 
