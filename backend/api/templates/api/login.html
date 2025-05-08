@@ -2,20 +2,51 @@
 {% block content %}
 <style>
     html, body { height: 100%; margin: 0; }
-    .parallax-bg {
+    body.theme-dark {
+        background: #11141a;
+        color: #fafdff;
+    }
+    .parallax-bg, .parallax-bg2, .parallax-bg3 {
         position: fixed;
         top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 0;
+        will-change: transform;
+        pointer-events: none;
+    }
+    .parallax-bg {
         background: linear-gradient(270deg, #e0eafc, #b2e0e6, #f3eaff, #e0f7e9, #e0eafc);
         background-size: 400% 400%;
         animation: gradientFlow 13s ease-in-out infinite;
-        z-index: 0;
-        will-change: transform;
-        transition: background 0.5s;
+        opacity: 1;
+        transition: opacity 0.5s;
+        filter: blur(2px);
+    }
+    .parallax-bg2 {
+        background: url('https://svgshare.com/i/14kA.svg') repeat-x bottom center;
+        background-size: cover;
+        opacity: 0.22;
+        animation: waveMove 18s linear infinite;
+        filter: blur(0.5px);
+    }
+    .parallax-bg3 {
+        background: url('https://svgshare.com/i/14kB.svg') repeat-x top center;
+        background-size: cover;
+        opacity: 0.13;
+        animation: waveMove2 22s linear infinite;
+        filter: blur(1.5px);
     }
     @keyframes gradientFlow {
         0% {background-position: 0% 50%;}
         50% {background-position: 100% 50%;}
         100% {background-position: 0% 50%;}
+    }
+    @keyframes waveMove {
+        0% {background-position-x: 0;}
+        100% {background-position-x: 1000px;}
+    }
+    @keyframes waveMove2 {
+        0% {background-position-x: 0;}
+        100% {background-position-x: -1200px;}
     }
     .login-container {
         min-height: 100vh;
@@ -24,81 +55,181 @@
         justify-content: center;
         position: relative;
         z-index: 1;
+        animation: fadeInPage 1.2s cubic-bezier(.4,1.4,.6,1);
+    }
+    @keyframes fadeInPage {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
     .login-card {
-        background: rgba(255,255,255,0.93);
-        border-radius: 22px;
-        box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.18);
-        padding: 2.5rem 2.2rem 2rem 2.2rem;
-        max-width: 410px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 28px;
+        box-shadow: 0 12px 48px 0 rgba(80, 120, 200, 0.22);
+        padding: 2.8rem 2.2rem 2.2rem 2.2rem;
+        max-width: 430px;
         width: 100%;
         animation: fadeInUp 1.1s cubic-bezier(.4,1.4,.6,1);
+        position: relative;
+        backdrop-filter: blur(2.5px);
     }
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(60px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    .login-card h2 {
-        font-weight: 700;
-        font-size: 2.1rem;
+    .login-card .brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         margin-bottom: 1.5rem;
+    }
+    .login-card .brand-logo {
+        width: 70px; height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #b2e0e6 0%, #e0eafc 100%);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.8rem; color: #7fd7e7;
+        box-shadow: 0 2px 18px 0 rgba(80, 120, 200, 0.13);
+        margin-bottom: 0.7rem;
+        border: 3px solid #fff;
+    }
+    .login-card h2 {
+        font-weight: 800;
+        font-size: 2.3rem;
+        margin-bottom: 1.7rem;
         letter-spacing: -1px;
     }
     .login-card .form-label {
-        font-weight: 500;
+        font-weight: 600;
         color: #2d3a4a;
         margin-bottom: 0.3rem;
         display: block;
+        letter-spacing: 0.1px;
+    }
+    .login-card .input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .login-card .input-group i {
+        position: absolute;
+        left: 1em;
+        color: #b2e0e6;
+        font-size: 1.1em;
+        pointer-events: none;
+        transition: color 0.2s;
     }
     .login-card input {
-        border-radius: 10px;
+        border-radius: 12px;
         border: 1.5px solid #e0eafc;
         background: #fafdff;
-        font-size: 1.08em;
-        padding: 0.7em 1em;
+        font-size: 1.13em;
+        padding: 0.7em 1em 0.7em 2.5em;
         margin-bottom: 0.2em;
-        transition: border 0.2s;
+        transition: border 0.2s, box-shadow 0.2s;
         width: 100%;
         box-sizing: border-box;
         display: block;
+        font-weight: 500;
     }
     .login-card input:focus {
         border: 1.5px solid #7fd7e7;
         background: #fff;
         outline: none;
+        box-shadow: 0 0 0 2px #b2e0e6;
+    }
+    .login-card input:focus + .input-hint {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .input-hint {
+        opacity: 0;
+        font-size: 0.97em;
+        color: #7fd7e7;
+        margin-bottom: 0.2em;
+        margin-top: -0.2em;
+        transform: translateY(8px);
+        transition: opacity 0.3s, transform 0.3s;
     }
     .login-card .btn-primary {
         background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
         color: #234;
-        font-weight: 600;
-        border-radius: 12px;
-        font-size: 1.1em;
-        margin-top: 0.5em;
-        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.10);
-        transition: background 0.2s, box-shadow 0.2s;
+        font-weight: 700;
+        border-radius: 14px;
+        font-size: 1.18em;
+        margin-top: 0.7em;
+        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.13);
+        transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+        letter-spacing: 0.5px;
+        padding: 0.7em 0;
     }
     .login-card .btn-primary:hover {
         background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
-        box-shadow: 0 4px 18px 0 rgba(80, 120, 200, 0.13);
+        box-shadow: 0 4px 18px 0 rgba(80, 120, 200, 0.18);
+        transform: scale(1.045);
     }
     .login-card .form-text, .login-card .text-danger {
-        font-size: 0.98em;
+        font-size: 0.99em;
     }
     .login-card .alert {
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 1em;
+        animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        margin-bottom: 1.1em;
     }
-    .login-card .mt-3 {
-        margin-top: 1.2rem !important;
+    @keyframes shake {
+        10%, 90% { transform: translateX(-2px); }
+        20%, 80% { transform: translateX(4px); }
+        30%, 50%, 70% { transform: translateX(-8px); }
+        40%, 60% { transform: translateX(8px); }
+    }
+    .theme-toggle {
+        position: absolute; top: 18px; right: 18px;
+        background: none; border: none; cursor: pointer;
+        font-size: 1.5em; color: #7fd7e7;
+        transition: color 0.2s;
+    }
+    .theme-dark .login-card {
+        background: rgba(24,28,36,0.98);
+        color: #fafdff;
+    }
+    .theme-dark .login-card input {
+        background: #232a36; color: #fafdff; border: 1.5px solid #2d3a4a;
+    }
+    .theme-dark .login-card input:focus {
+        border: 1.5px solid #7fd7e7; background: #232a36;
+    }
+    .theme-dark .login-card .btn-primary {
+        background: linear-gradient(90deg, #232a36 0%, #7fd7e7 100%);
+        color: #fff;
+    }
+    .theme-dark .login-card .btn-primary:hover {
+        background: linear-gradient(90deg, #7fd7e7 0%, #232a36 100%);
+    }
+    .theme-dark .parallax-bg {
+        background: linear-gradient(270deg, #232a36, #181c24, #232a36, #181c24, #232a36);
+        filter: blur(3px) brightness(0.7);
+        opacity: 0.95;
+    }
+    .theme-dark .parallax-bg2, .theme-dark .parallax-bg3 {
+        opacity: 0.10;
+        filter: blur(2px) brightness(0.7);
     }
     @media (max-width: 600px) {
         .login-card { padding: 1.2rem 0.5rem; }
         .login-card h2 { font-size: 1.4rem; }
+        .login-card .brand-logo { width: 48px; height: 48px; font-size: 1.5rem; }
     }
 </style>
 <div class="parallax-bg" id="parallax-bg"></div>
+<div class="parallax-bg2" id="parallax-bg2"></div>
+<div class="parallax-bg3" id="parallax-bg3"></div>
 <div class="login-container">
     <div class="login-card">
+        <button class="theme-toggle" id="theme-toggle" title="Сменить тему"><i class="fas fa-moon"></i></button>
+        <div class="brand">
+            <div class="brand-logo"><i class="fas fa-bus-alt"></i></div>
+            <span style="font-weight:700; color:#7fd7e7; font-size:1.18em; letter-spacing:0.5px;">BusBooking</span>
+        </div>
         <h2 class="text-center mb-4">Вход</h2>
         <form method="post" novalidate autocomplete="off">
             {% csrf_token %}
@@ -107,7 +238,11 @@
                     <label for="{{ field.id_for_label }}" class="form-label">
                         {% if field.name == 'username' %}Имя пользователя{% elif field.name == 'password' %}Пароль{% else %}{{ field.label }}{% endif %}
                     </label>
-                    {{ field }}
+                    <div class="input-group">
+                        {% if field.name == 'username' %}<i class="fas fa-user"></i>{% elif field.name == 'password' %}<i class="fas fa-lock"></i>{% endif %}
+                        {{ field }}
+                    </div>
+                    <div class="input-hint">{% if field.name == 'username' %}Введите ваш логин{% elif field.name == 'password' %}Введите пароль{% endif %}</div>
                     {% for error in field.errors %}
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
@@ -124,15 +259,39 @@
     </div>
 </div>
 <script>
-// JS Parallax effect
+// Parallax effect
 const parallax = document.getElementById('parallax-bg');
+const parallax2 = document.getElementById('parallax-bg2');
+const parallax3 = document.getElementById('parallax-bg3');
 document.addEventListener('mousemove', function(e) {
     const x = (e.clientX / window.innerWidth - 0.5) * 20;
     const y = (e.clientY / window.innerHeight - 0.5) * 20;
     parallax.style.transform = `translate(${x}px, ${y}px) scale(1.03)`;
+    parallax2.style.transform = `translate(${x/2}px, ${y/2}px) scale(1.01)`;
+    parallax3.style.transform = `translate(${x/3}px, ${y/3}px) scale(1.01)`;
 });
 document.addEventListener('mouseleave', function() {
     parallax.style.transform = '';
+    parallax2.style.transform = '';
+    parallax3.style.transform = '';
+});
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click', function() {
+    document.body.classList.toggle('theme-dark');
+    themeToggle.innerHTML = document.body.classList.contains('theme-dark') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+});
+// Input hints
+const inputs = document.querySelectorAll('.login-card input');
+inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+        const hint = this.parentNode.parentNode.querySelector('.input-hint');
+        if(hint) hint.style.opacity = 1;
+    });
+    input.addEventListener('blur', function() {
+        const hint = this.parentNode.parentNode.querySelector('.input-hint');
+        if(hint) hint.style.opacity = 0;
+    });
 });
 </script>
 {% endblock %} 
