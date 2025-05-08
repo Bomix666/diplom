@@ -1,0 +1,22 @@
+{% extends 'api/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Детали маршрута</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3>{{ route.departure_station.city.name }} → {{ route.arrival_station.city.name }}</h3>
+            <p><strong>Дата и время отправления:</strong> {{ route.departure_time|date:"d.m.Y H:i" }}</p>
+            <p><strong>Дата и время прибытия:</strong> {{ route.arrival_time|date:"d.m.Y H:i" }}</p>
+            <p><strong>Перевозчик:</strong> {{ route.carrier }}</p>
+            <p><strong>Модель автобуса:</strong> {{ route.bus_model }}</p>
+            <p><strong>Класс обслуживания:</strong> {{ route.service_class }}</p>
+            <p><strong>Цена:</strong> {{ route.price }} ₽</p>
+            <p><strong>Свободных мест:</strong> {{ route.available_seats }} из {{ route.total_seats }}</p>
+            <a href="{% url 'booking' %}?route_id={{ route.id }}" class="btn btn-primary mt-3">
+                Забронировать билет
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

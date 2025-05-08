@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import BookingWizardView, CancelTicketView, CustomLogoutView
+from .views import BookingWizardView, CancelTicketView, CustomLogoutView, RouteDetailView
 
 router = DefaultRouter()
 router.register(r'cities', views.CityViewSet)
@@ -14,4 +14,5 @@ urlpatterns = [
     path('booking/', BookingWizardView.as_view(), name='booking'),
     path('tickets/cancel/<int:ticket_id>/', CancelTicketView.as_view(), name='cancel_ticket'),
     path('accounts/logout/', CustomLogoutView.as_view(), name='logout'),
+    path('route/<int:pk>/', RouteDetailView.as_view(), name='route_detail'),
 ] 

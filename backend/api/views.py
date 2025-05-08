@@ -10,7 +10,7 @@ from .serializers import (
     CitySerializer, StationSerializer, RouteSerializer,
     TicketSerializer, UserSerializer
 )
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views import View
@@ -258,3 +258,8 @@ class CustomLogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('register')
+
+class RouteDetailView(DetailView):
+    model = Route
+    template_name = 'api/route_detail.html'
+    context_object_name = 'route'

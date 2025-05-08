@@ -1,204 +1,266 @@
 {% extends 'api/base.html' %}
 
-{% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1 class="mb-4">Маршруты</h1>
-        
-        <div class="card mb-4 shadow-sm border-primary">
-            <div class="card-body">
-                <form method="get" class="row g-3 align-items-end" id="search-form" autocomplete="off">
-                    <div class="col-md-3">
-                        <label for="departure_city" class="form-label">Откуда</label>
-                        <input type="text" class="form-control" id="departure_city" name="departure_city" value="{{ request.GET.departure_city }}" placeholder="Введите город отправления..." list="cities-list">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="arrival_city" class="form-label">Куда</label>
-                        <input type="text" class="form-control" id="arrival_city" name="arrival_city" value="{{ request.GET.arrival_city }}" placeholder="Введите город прибытия..." list="cities-list">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="date" class="form-label">Дата</label>
-                        <input type="date" class="form-control" id="date" name="date" value="{{ request.GET.date }}">
-                    </div>
-                    <div class="col-md-3 d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg" id="search-btn">
-                            <span id="search-btn-text"><i class="fas fa-search me-2"></i>Найти</span>
-                            <span id="search-btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                    <datalist id="cities-list"></datalist>
-                </form>
-            </div>
-        </div>
+{% block navbar %}
+<style>
+.wow-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(90deg, #e0eafc 0%, #b2e0e6 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.18), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    animation: fadeInNavbar 0.7s cubic-bezier(.4,1.4,.6,1);
+    border-radius: 0 0 22px 22px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.theme-dark .wow-navbar {
+    background: linear-gradient(90deg, #181c24 0%, #232a36 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.28), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+}
+.wow-navbar .navbar-brand {
+    color: #1a2a3a !important;
+    font-weight: 800;
+    font-size: 1.5em;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.08);
+    transition: color 0.2s;
+}
+.theme-dark .wow-navbar .navbar-brand {
+    color: #7fd7e7 !important;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.18);
+}
+.wow-navbar .nav-link {
+    color: #1a2a3a !important;
+    font-weight: 600;
+    font-size: 1.13em;
+    margin-left: 0.7em;
+    margin-right: 0.2em;
+    letter-spacing: 0.2px;
+    transition: color 0.18s, text-shadow 0.18s;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.07);
+    border-radius: 8px;
+    padding: 0.45em 1em;
+}
+.theme-dark .wow-navbar .nav-link {
+    color: #e0eafc !important;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.13);
+}
+.wow-navbar .nav-link.active, .wow-navbar .nav-link:focus, .wow-navbar .nav-link:hover {
+    color: #fff !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    box-shadow: 0 2px 12px 0 rgba(127,215,231,0.13);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.theme-dark .wow-navbar .nav-link.active, .theme-dark .wow-navbar .nav-link:focus, .theme-dark .wow-navbar .nav-link:hover {
+    color: #181c24 !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
 
-        <div id="results">
-        {% if routes %}
-        <div class="table-responsive animate__animated animate__fadeIn">
-            <table class="table table-hover align-middle">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Маршрут</th>
-                        <th>Отправление</th>
-                        <th>Прибытие</th>
-                        <th>Цена</th>
-                        <th>Места</th>
-                        <th>Перевозчик</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for route in routes %}
-                    <tr>
-                        <td>
-                            <strong>{{ route.departure_station.city.name }}</strong>
-                            <i class="fas fa-arrow-right mx-2 text-primary"></i>
-                            <strong>{{ route.arrival_station.city.name }}</strong>
-                        </td>
-                        <td>
-                            <span class="fw-bold">{{ route.departure_time|date:"d.m.Y H:i" }}</span><br>
-                            <small class="text-muted">{{ route.departure_station.name }}</small>
-                        </td>
-                        <td>
-                            <span class="fw-bold">{{ route.arrival_time|date:"d.m.Y H:i" }}</span><br>
-                            <small class="text-muted">{{ route.arrival_station.name }}</small>
-                        </td>
-                        <td>
-                            {% if route.available_seats == 0 %}
-                                <span class="badge bg-danger fs-6">{{ route.price }} ₽</span>
-                            {% elif route.available_seats <= 10 %}
-                                <span class="badge bg-danger fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Цена выше из-за малого количества мест!"><i class="fas fa-exclamation-triangle me-1"></i>{{ route.price }} ₽</span>
-                            {% elif route.available_seats <= 20 %}
-                                <span class="badge bg-warning text-dark fs-6" data-bs-toggle="tooltip" data-bs-placement="top" title="Осталось мало мест, цена выше обычной!"><i class="fas fa-info-circle me-1"></i>{{ route.price }} ₽</span>
-                            {% else %}
-                                <span class="badge bg-success fs-6">{{ route.price }} ₽</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if route.available_seats == 0 %}
-                                <span class="badge bg-danger fs-6">0 из {{ route.total_seats }}</span>
-                            {% else %}
-                                <span class="badge bg-info text-dark fs-6">{{ route.available_seats }} из {{ route.total_seats }}</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="fw-semibold">{{ route.carrier }}</span><br>
-                            <small class="text-muted">{{ route.bus_model }}</small>
-                        </td>
-                        <td>
-                            {% if route.available_seats > 0 %}
-                            <a href="{% url 'booking' %}?route_id={{ route.id }}" class="btn btn-primary btn-sm">
-                                <i class="fas fa-ticket-alt me-1"></i>Забронировать билет
-                            </a>
-                            {% else %}
-                            <button class="btn btn-secondary btn-sm" disabled>Нет мест</button>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="alert alert-info animate__animated animate__fadeIn">
-            <i class="fas fa-info-circle me-2"></i>
-            {% if request.GET %}
-            По вашему запросу маршрутов не найдено
-            {% else %}
-            Используйте форму выше для поиска маршрутов
-            {% endif %}
-        </div>
-        {% endif %}
+.routes-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    animation: fadeInPage 1.2s cubic-bezier(.4,1.4,.6,1);
+    padding-top: 5.5rem;
+    padding-bottom: 2.5rem;
+}
+
+.routes-title {
+    font-weight: 900;
+    font-size: 2.7rem;
+    letter-spacing: -1.5px;
+    text-align: center;
+    margin-bottom: 1.2rem;
+    color: #181c24;
+    text-shadow: 0 2px 12px #e0eafc;
+}
+
+.theme-dark .routes-title {
+    color: #e0eafc;
+    text-shadow: 0 2px 12px #232a36;
+}
+
+.routes-search-form {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto 2.5rem auto;
+    background: rgba(255,255,255,0.93);
+    border-radius: 22px;
+    box-shadow: 0 4px 24px 0 rgba(80,120,200,0.10);
+    padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 1.1s cubic-bezier(.4,1.4,.6,1);
+}
+
+.theme-dark .routes-search-form {
+    background: rgba(24,28,36,0.98);
+}
+
+.routes-list {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.route-card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.18);
+    padding: 2rem 1.5rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    animation: fadeInUp 1.2s cubic-bezier(.4,1.4,.6,1);
+}
+
+.route-card:hover {
+    box-shadow: 0 16px 48px 0 rgba(127,215,231,0.18);
+    transform: translateY(-4px) scale(1.012);
+}
+
+.theme-dark .route-card {
+    background: rgba(24,28,36,0.98);
+    color: #e0eafc;
+}
+
+.route-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.route-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.route-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #7fd7e7;
+}
+
+.route-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.route-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.route-detail i {
+    color: #7fd7e7;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(60px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+    .routes-container { padding-top: 2.5rem; }
+    .routes-list { grid-template-columns: 1fr; }
+    .route-card { padding: 1.5rem 1rem; }
+}
+</style>
+<nav class="navbar navbar-expand-lg wow-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Главная</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{% url 'routes' %}"><i class="fas fa-route me-1"></i>Маршруты</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle me-1"></i>О нас</a></li>
+            </ul>
         </div>
     </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="routes-container">
+    <h1 class="routes-title">Маршруты</h1>
+    
+    <div class="routes-search-form">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="from" placeholder="Откуда" value="{{ request.GET.from }}">
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="to" placeholder="Куда" value="{{ request.GET.to }}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Найти
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="routes-list">
+        {% for route in routes %}
+        <div class="route-card">
+            <div class="route-info">
+                <div class="route-header">
+                    <h3 class="route-title">{{ route.title }}</h3>
+                    <span class="route-price">{{ route.price }} ₽</span>
+                </div>
+                <div class="route-details">
+                    <div class="route-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ route.from_city }} → {{ route.to_city }}</span>
+                    </div>
+                    <div class="route-detail">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ route.departure_time }} - {{ route.arrival_time }}</span>
+                    </div>
+                    <div class="route-detail">
+                        <i class="fas fa-bus"></i>
+                        <span>{{ route.bus_number }}</span>
+                    </div>
+                    <div class="route-detail">
+                        <i class="fas fa-chair"></i>
+                        <span>Свободных мест: {{ route.available_seats }}</span>
+                    </div>
+                </div>
+                <a href="{% url 'route_detail' route.id %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-ticket-alt me-2"></i>Забронировать
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="lead">Маршруты не найдены</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
-<script>
-// Анимация кнопки поиска
-const searchForm = document.getElementById('search-form');
-const searchBtn = document.getElementById('search-btn');
-const searchBtnText = document.getElementById('search-btn-text');
-const searchBtnSpinner = document.getElementById('search-btn-spinner');
-
-searchForm.addEventListener('submit', function() {
-    searchBtnText.classList.add('d-none');
-    searchBtnSpinner.classList.remove('d-none');
-});
-
-// Автозаполнение городов
-function fetchCities(query, callback) {
-    if (!query || query.length < 2) return;
-    fetch(`/api/cities/search/?q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(data => {
-            callback(data.map(city => city.name));
-        });
-}
-
-function setupAutocomplete(inputId) {
-    const input = document.getElementById(inputId);
-    const datalist = document.getElementById('cities-list');
-    input.addEventListener('input', function() {
-        fetchCities(this.value, function(cities) {
-            datalist.innerHTML = '';
-            cities.forEach(city => {
-                const option = document.createElement('option');
-                option.value = city;
-                datalist.appendChild(option);
-            });
-        });
-    });
-}
-setupAutocomplete('departure_city');
-setupAutocomplete('arrival_city');
-
-// Плавная прокрутка к результатам
-searchForm.addEventListener('submit', function(e) {
-    setTimeout(function() {
-        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-    }, 500);
-});
-
-// Инициализация Bootstrap tooltips
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl);
-});
-</script>
-
-<style>
-    .table thead th {
-        background: #e0eafc;
-        color: #2d3a4a;
-        font-weight: 600;
-        font-size: 1.1em;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-    }
-    .table tbody tr {
-        transition: box-shadow 0.2s, background 0.2s;
-    }
-    .table tbody tr:hover {
-        background: #f6f8fa;
-        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.08);
-    }
-    .badge.bg-success, .badge.bg-info, .badge.bg-warning, .badge.bg-danger {
-        font-size: 1em;
-        padding: 0.5em 1em;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.08);
-    }
-    .btn-primary {
-        background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
-        border: none;
-        color: #234;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: box-shadow 0.2s, background 0.2s;
-    }
-    .btn-primary:hover {
-        background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
-        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.12);
-    }
-</style>
 {% endblock %} 
