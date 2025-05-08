@@ -1,6 +1,36 @@
 {% extends 'api/base.html' %}
 
 {% block content %}
+{% if user.is_staff %}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8 col-md-10">
+        <div class="profile-card mb-4" style="background:#f3eaff; border:2px solid #a084e8; display:flex; align-items:center; gap:2.5rem;">
+            <div class="text-center" style="flex:0 0 160px;">
+                <div class="profile-avatar mb-3" style="background:#a084e8;color:#fff;width:110px;height:110px;font-size:3.5rem;">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+            <div style="flex:1;">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div>
+                        <h2 class="mb-0">{{ user.get_full_name|default:user.username }}</h2>
+                        <div class="text-muted">{{ user.email }}</div>
+                    </div>
+                    <span class="badge bg-secondary fs-6" style="height:2.1em;display:flex;align-items:center;">Сотрудник</span>
+                </div>
+                <div class="mb-2"><b>Отдел:</b> {{ profile.department|default:'—' }}</div>
+                <div class="mb-2"><b>Телефон:</b> {{ profile.phone|default:'—' }}</div>
+                <div class="mb-2"><b>Дата рождения:</b> {{ profile.birth_date|date:'d.m.Y'|default:'—' }}</div>
+                <div class="mb-2"><b>Баланс:</b> {{ profile.balance|default:'0.00' }} ₽</div>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="mailto:{{ user.email }}" class="btn btn-outline-primary"><i class="fas fa-envelope me-1"></i>Отправить письмо</a>
+                    <a href="#" class="btn btn-outline-secondary"><i class="fas fa-file-signature me-1"></i>Сформировать подпись</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="row">
     <div class="col-md-4">
         <div class="profile-card text-center">
@@ -62,4 +92,5 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %} 

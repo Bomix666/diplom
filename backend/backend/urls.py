@@ -37,6 +37,7 @@ urlpatterns = [
         form_class=CustomUserCreationForm,
         success_url='/accounts/login/'
     ), name='register'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(next_page='/accounts/login/'), name='logout'),
 ]
 
 if settings.DEBUG:

@@ -61,10 +61,11 @@ class Ticket(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    phone = models.CharField(max_length=20, blank=True, verbose_name="Телефон")
-    birth_date = models.DateField(null=True, blank=True, verbose_name="Дата рождения")
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name="Аватар")
-    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Баланс (₽)")
+    phone = models.CharField(blank=True, max_length=20, verbose_name='Телефон')
+    birth_date = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
+    avatar = models.ImageField(blank=True, null=True, upload_to='avatars/', verbose_name='Аватар')
+    balance = models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='Баланс (₽)')
+    department = models.CharField(max_length=100, blank=True, null=True, verbose_name='Отдел')
 
     def __str__(self):
         return f"Профиль {self.user.username}"

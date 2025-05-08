@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import City, Station, Route, Ticket
+from .models import City, Station, Route, Ticket, Profile
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
@@ -25,3 +25,8 @@ class TicketAdmin(admin.ModelAdmin):
     list_filter = ('status', 'purchase_date')
     search_fields = ('user__username', 'route__departure_station__name', 
                     'route__arrival_station__name')
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'department', 'phone', 'birth_date', 'balance')
+    search_fields = ('user__username', 'user__email', 'department', 'phone')

@@ -1,0 +1,21 @@
+{% extends "api/base.html" %}
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center" style="min-height:60vh;">
+    <div class="card shadow-sm p-4 text-center" style="max-width:400px;">
+        <div class="mb-3">
+            <i class="fas fa-sign-out-alt fa-3x text-primary"></i>
+        </div>
+        <h2 class="mb-2">Вы успешно вышли</h2>
+        <p class="mb-3 text-muted">Сейчас вы будете перенаправлены на страницу входа.</p>
+        <div class="spinner-border text-primary mb-2" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="small text-muted">Если этого не произошло, <a href="{% url 'login' %}">нажмите сюда</a>.</p>
+    </div>
+</div>
+<script>
+    setTimeout(function() {
+        window.location.href = "{% url 'login' %}";
+    }, 1200);
+</script>
+{% endblock %} 

@@ -19,6 +19,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.http import JsonResponse, HttpResponseForbidden
+from django.contrib.auth import logout
 
 class HomePageView(TemplateView):
     template_name = 'api/home.html'
@@ -252,3 +253,8 @@ class CancelTicketView(LoginRequiredMixin, View):
                 return JsonResponse({'success': False, 'error': 'Уже отменён'}, status=400)
         except Ticket.DoesNotExist:
             return HttpResponseForbidden()
+
+class CustomLogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('register')

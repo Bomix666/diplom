@@ -36,7 +36,7 @@ class UserForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['phone', 'birth_date', 'avatar']
+        fields = ['phone', 'birth_date', 'avatar', 'balance', 'department']
         labels = {
             'phone': 'Телефон',
             'birth_date': 'Дата рождения',
