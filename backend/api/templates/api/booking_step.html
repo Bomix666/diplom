@@ -1,156 +1,257 @@
 {% extends 'api/base.html' %}
-{% block content %}
+{% block navbar %}
 <style>
-    .card {
-        background: #fafdff;
-        border-radius: 18px;
-        box-shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.08);
-        border: none;
-        transition: box-shadow 0.2s;
-    }
-    .card:hover {
-        box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.14);
-    }
-    .btn-primary, .btn-success {
-        background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
-        border: none;
-        color: #234;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: box-shadow 0.2s, background 0.2s;
-    }
-    .btn-primary:hover, .btn-success:hover {
-        background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
-        box-shadow: 0 2px 12px 0 rgba(80, 120, 200, 0.12);
-    }
-    .booking-steps {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 2rem;
-        gap: 1.5rem;
-    }
-    .booking-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        font-weight: 600;
-        color: #b2b8c6;
-        transition: color 0.3s;
-    }
-    .booking-step.active {
-        color: #2d3a4a;
-    }
-    .booking-step-circle {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: #e0eafc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2em;
-        margin-bottom: 0.3em;
-        border: 2px solid #b2e0e6;
-        transition: background 0.3s, border 0.3s;
-    }
-    .booking-step.active .booking-step-circle {
-        background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
-        border: 2px solid #7fd7e7;
-        color: #234;
-    }
-    .booking-step-line {
-        width: 48px;
-        height: 4px;
-        background: #e0eafc;
-        border-radius: 2px;
-        margin: 0 0.5em;
-    }
-    .fade-step {
-        animation: fadeInStep 0.5s;
-    }
-    @keyframes fadeInStep {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+.wow-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(90deg, #e0eafc 0%, #b2e0e6 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.18), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    animation: fadeInNavbar 0.7s cubic-bezier(.4,1.4,.6,1);
+    border-radius: 0 0 22px 22px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.theme-dark .wow-navbar {
+    background: linear-gradient(90deg, #181c24 0%, #232a36 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.28), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+}
+.wow-navbar .navbar-brand {
+    color: #1a2a3a !important;
+    font-weight: 800;
+    font-size: 1.5em;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.08);
+    transition: color 0.2s;
+}
+.theme-dark .wow-navbar .navbar-brand {
+    color: #7fd7e7 !important;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.18);
+}
+.wow-navbar .nav-link {
+    color: #1a2a3a !important;
+    font-weight: 600;
+    font-size: 1.13em;
+    margin-left: 0.7em;
+    margin-right: 0.2em;
+    letter-spacing: 0.2px;
+    transition: color 0.18s, text-shadow 0.18s;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.07);
+    border-radius: 8px;
+    padding: 0.45em 1em;
+}
+.theme-dark .wow-navbar .nav-link {
+    color: #e0eafc !important;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.13);
+}
+.wow-navbar .nav-link.active, .wow-navbar .nav-link:focus, .wow-navbar .nav-link:hover {
+    color: #fff !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    box-shadow: 0 2px 12px 0 rgba(127,215,231,0.13);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.theme-dark .wow-navbar .nav-link.active, .theme-dark .wow-navbar .nav-link:focus, .theme-dark .wow-navbar .nav-link:hover {
+    color: #181c24 !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.wow-navbar .navbar-toggler {
+    border: none;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+.wow-navbar i {
+    font-size: 1.25em;
+    margin-right: 0.3em;
+    color: #7fd7e7;
+    filter: drop-shadow(0 1px 4px #b2e0e6);
+    transition: color 0.2s;
+}
+.wow-navbar .nav-link.active i, .wow-navbar .nav-link:focus i, .wow-navbar .nav-link:hover i {
+    color: #fff;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+@media (max-width: 900px) {
+    .wow-navbar { border-radius: 0 0 14px 14px; }
+    .wow-navbar .navbar-brand { font-size: 1.1em; }
+    .wow-navbar .nav-link { font-size: 1em; padding: 0.4em 0.7em; }
+}
+.booking-bg, .booking-bg2, .booking-bg3 {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0;
+    will-change: transform;
+    pointer-events: none;
+}
+.booking-bg {
+    background: linear-gradient(270deg, #e0eafc, #b2e0e6, #f3eaff, #e0f7e9, #e0eafc);
+    background-size: 400% 400%;
+    animation: gradientFlow 13s ease-in-out infinite;
+    opacity: 1;
+    transition: opacity 0.5s;
+    filter: blur(2px);
+}
+.booking-bg2 {
+    background: url('https://svgshare.com/i/14kA.svg') repeat-x bottom center;
+    background-size: cover;
+    opacity: 0.22;
+    animation: waveMove 18s linear infinite;
+    filter: blur(0.5px);
+}
+.booking-bg3 {
+    background: url('https://svgshare.com/i/14kB.svg') repeat-x top center;
+    background-size: cover;
+    opacity: 0.13;
+    animation: waveMove2 22s linear infinite;
+    filter: blur(1.5px);
+}
+@keyframes gradientFlow {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+@keyframes waveMove {
+    0% {background-position-x: 0;}
+    100% {background-position-x: 1000px;}
+}
+@keyframes waveMove2 {
+    0% {background-position-x: 0;}
+    100% {background-position-x: -1200px;}
+}
 </style>
-<div class="booking-steps">
-    <div class="booking-step {% if step == '1' %}active{% endif %}">
-        <div class="booking-step-circle">1</div>
-        <span>Место и тип</span>
-    </div>
-    <div class="booking-step-line"></div>
-    <div class="booking-step {% if step == '2' %}active{% endif %}">
-        <div class="booking-step-circle">2</div>
-        <span>Пассажир</span>
-    </div>
-    <div class="booking-step-line"></div>
-    <div class="booking-step {% if step == '3' %}active{% endif %}">
-        <div class="booking-step-circle">3</div>
-        <span>Подтверждение</span>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <div class="card mt-4">
-            <div class="card-body">
-                <h2 class="mb-4">Бронирование билета</h2>
-                <form method="post" id="booking-form">
-                    {% csrf_token %}
-                    {% if step == '1' %}
-                        <input type="hidden" name="step" value="1">
-                        <input type="hidden" name="route_id" value="{{ route_id }}">
-                        <div class="mb-3">
-                            <label for="ticket_type" class="form-label">Тип билета</label>
-                            <select class="form-control" name="ticket_type" id="ticket_type">
-                                <option value="adult">Взрослый</option>
-                                <option value="discount">Льготный</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="seat_number" class="form-label">Место</label>
-                            <input type="number" class="form-control" name="seat_number" id="seat_number" min="1" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Далее</button>
-                    {% elif step == '2' %}
-                        <input type="hidden" name="step" value="2">
-                        <div class="mb-3">
-                            <label for="passenger_name" class="form-label">ФИО пассажира</label>
-                            <input type="text" class="form-control" name="passenger_name" id="passenger_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="passenger_birth" class="form-label">Дата рождения</label>
-                            <input type="date" class="form-control" name="passenger_birth" id="passenger_birth" required>
-                        </div>
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="is_discount" id="is_discount" value="1">
-                            <label class="form-check-label" for="is_discount">Льготный билет</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Далее</button>
-                    {% elif step == '3' %}
-                        <input type="hidden" name="step" value="3">
-                        <h5>Проверьте данные перед подтверждением:</h5>
-                        <ul>
-                            <li>Тип билета: {{ request.session.booking.ticket_type }}</li>
-                            <li>Место: {{ request.session.booking.seat_number }}</li>
-                            <li>ФИО: {{ request.session.booking.passenger_name }}</li>
-                            <li>Дата рождения: {{ request.session.booking.passenger_birth }}</li>
-                            <li>Льготный: {{ request.session.booking.is_discount|yesno:"Да,Нет" }}</li>
-                        </ul>
-                        <button type="submit" class="btn btn-success">Подтвердить бронирование</button>
-                    {% endif %}
-                </form>
-            </div>
+<nav class="navbar navbar-expand-lg wow-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle me-1"></i>О нас</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'routes' %}"><i class="fas fa-route me-1"></i>Маршруты</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'tickets' %}"><i class="fas fa-ticket-alt me-1"></i>Мои билеты</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Профиль</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://127.0.0.1:8000/accounts/register/"><i class="fas fa-sign-out-alt me-1"></i>Выход</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Вход</a></li>
+                {% endif %}
+            </ul>
         </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="booking-bg" id="booking-bg"></div>
+<div class="booking-bg2" id="booking-bg2"></div>
+<div class="booking-bg3" id="booking-bg3"></div>
+<div class="container py-5" style="max-width:700px;z-index:1;position:relative;">
+    <div class="booking-steps mb-4">
+        <div class="booking-step {% if step == '1' %}active{% endif %}">
+            <div class="booking-step-circle">1</div>
+            <span>Место и тип</span>
+        </div>
+        <div class="booking-step-line"></div>
+        <div class="booking-step {% if step == '2' %}active{% endif %}">
+            <div class="booking-step-circle">2</div>
+            <span>Пассажир</span>
+        </div>
+        <div class="booking-step-line"></div>
+        <div class="booking-step {% if step == '3' %}active{% endif %}">
+            <div class="booking-step-circle">3</div>
+            <span>Подтверждение</span>
+        </div>
+    </div>
+    <div class="card shadow-sm p-4 fade-step" style="border-radius:22px;background:#fff;">
+        <h2 class="mb-4 text-center" style="font-weight:800;">Бронирование билета</h2>
+        <form method="post" id="booking-form">
+            {% csrf_token %}
+            {% if step == '1' %}
+                <input type="hidden" name="step" value="1">
+                <input type="hidden" name="route_id" value="{{ route_id }}">
+                <div class="mb-3">
+                    <label for="ticket_type" class="form-label">Тип билета</label>
+                    <select class="form-control" name="ticket_type" id="ticket_type">
+                        <option value="adult">Взрослый</option>
+                        <option value="discount">Льготный</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="seat_number" class="form-label">Место</label>
+                    <input type="number" class="form-control" name="seat_number" id="seat_number" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Далее</button>
+            {% elif step == '2' %}
+                <input type="hidden" name="step" value="2">
+                <div class="mb-3">
+                    <label for="passenger_name" class="form-label">ФИО пассажира</label>
+                    <input type="text" class="form-control" name="passenger_name" id="passenger_name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="passenger_birth" class="form-label">Дата рождения</label>
+                    <input type="date" class="form-control" name="passenger_birth" id="passenger_birth" required>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="is_discount" id="is_discount" value="1">
+                    <label class="form-check-label" for="is_discount">Льготный билет</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Далее</button>
+            {% elif step == '3' %}
+                <input type="hidden" name="step" value="3">
+                <h5 class="mb-3 text-center">Проверьте данные перед подтверждением:</h5>
+                <ul class="list-group mb-4">
+                    <li class="list-group-item"><strong>Тип билета:</strong> {{ request.session.booking.ticket_type }}</li>
+                    <li class="list-group-item"><strong>Место:</strong> {{ request.session.booking.seat_number }}</li>
+                    <li class="list-group-item"><strong>ФИО:</strong> {{ request.session.booking.passenger_name }}</li>
+                    <li class="list-group-item"><strong>Дата рождения:</strong> {{ request.session.booking.passenger_birth }}</li>
+                    <li class="list-group-item"><strong>Льготный:</strong> {{ request.session.booking.is_discount|yesno:"Да,Нет" }}</li>
+                </ul>
+                <button type="submit" class="btn btn-success w-100">Подтвердить бронирование</button>
+            {% endif %}
+        </form>
     </div>
 </div>
 <script>
-    // Плавная анимация перехода между шагами
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('booking-form');
-        if (form) {
-            form.classList.add('fade-step');
-        }
-    });
+// Parallax effect
+const bookingBg = document.getElementById('booking-bg');
+const bookingBg2 = document.getElementById('booking-bg2');
+const bookingBg3 = document.getElementById('booking-bg3');
+document.addEventListener('mousemove', function(e) {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    bookingBg.style.transform = `translate(${x}px, ${y}px) scale(1.03)`;
+    bookingBg2.style.transform = `translate(${x/2}px, ${y/2}px) scale(1.01)`;
+    bookingBg3.style.transform = `translate(${x/3}px, ${y/3}px) scale(1.01)`;
+});
+document.addEventListener('mouseleave', function() {
+    bookingBg.style.transform = '';
+    bookingBg2.style.transform = '';
+    bookingBg3.style.transform = '';
+});
 </script>
+{% endblock %}
+
+{% block footer %}
+<footer style="background:rgba(255,255,255,0.93);border-top:2px solid #e0eafc;padding:2.2rem 0 1.2rem 0;margin-top:3rem;box-shadow:0 -2px 24px 0 rgba(80,120,200,0.07);">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <div class="mb-2 mb-md-0" style="font-weight:700;font-size:1.1em;color:#7fd7e7;">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking © 2024
+        </div>
+        <div class="mb-2 mb-md-0">
+            <a href="mailto:info@busbooking.ru" class="me-3 text-primary"><i class="fas fa-envelope"></i> info@busbooking.ru</a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-vk"></i></a>
+            <a href="#" class="text-primary"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div style="font-size:0.95em;color:#b2e0e6;">Сделано с любовью для путешественников</div>
+    </div>
+</footer>
 {% endblock %} 
