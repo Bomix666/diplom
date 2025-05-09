@@ -1,22 +1,231 @@
 {% extends 'api/base.html' %}
 
+{% block navbar %}
+<style>
+.wow-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(90deg, #e0eafc 0%, #b2e0e6 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.18), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    animation: fadeInNavbar 0.7s cubic-bezier(.4,1.4,.6,1);
+    border-radius: 0 0 22px 22px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.theme-dark .wow-navbar {
+    background: linear-gradient(90deg, #181c24 0%, #232a36 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.28), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+}
+.wow-navbar .navbar-brand {
+    color: #1a2a3a !important;
+    font-weight: 800;
+    font-size: 1.5em;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.08);
+    transition: color 0.2s;
+}
+.theme-dark .wow-navbar .navbar-brand {
+    color: #7fd7e7 !important;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.18);
+}
+.wow-navbar .nav-link {
+    color: #1a2a3a !important;
+    font-weight: 600;
+    font-size: 1.13em;
+    margin-left: 0.7em;
+    margin-right: 0.2em;
+    letter-spacing: 0.2px;
+    transition: color 0.18s, text-shadow 0.18s;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.07);
+    border-radius: 8px;
+    padding: 0.45em 1em;
+}
+.theme-dark .wow-navbar .nav-link {
+    color: #e0eafc !important;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.13);
+}
+.wow-navbar .nav-link.active, .wow-navbar .nav-link:focus, .wow-navbar .nav-link:hover {
+    color: #fff !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    box-shadow: 0 2px 12px 0 rgba(127,215,231,0.13);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.theme-dark .wow-navbar .nav-link.active, .theme-dark .wow-navbar .nav-link:focus, .theme-dark .wow-navbar .nav-link:hover {
+    color: #181c24 !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.wow-navbar .navbar-toggler {
+    border: none;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+.wow-navbar i {
+    font-size: 1.25em;
+    margin-right: 0.3em;
+    color: #7fd7e7;
+    filter: drop-shadow(0 1px 4px #b2e0e6);
+    transition: color 0.2s;
+}
+.wow-navbar .nav-link.active i, .wow-navbar .nav-link:focus i, .wow-navbar .nav-link:hover i {
+    color: #fff;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+@media (max-width: 900px) {
+    .wow-navbar { border-radius: 0 0 14px 14px; }
+    .wow-navbar .navbar-brand { font-size: 1.1em; }
+    .wow-navbar .nav-link { font-size: 1em; padding: 0.4em 0.7em; }
+}
+.route-bg, .route-bg2, .route-bg3 {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0;
+    will-change: transform;
+    pointer-events: none;
+}
+.route-bg {
+    background: linear-gradient(270deg, #e0eafc, #b2e0e6, #f3eaff, #e0f7e9, #e0eafc);
+    background-size: 400% 400%;
+    animation: gradientFlow 13s ease-in-out infinite;
+    opacity: 1;
+    transition: opacity 0.5s;
+    filter: blur(2px);
+}
+.route-bg2 {
+    background: url('https://svgshare.com/i/14kA.svg') repeat-x bottom center;
+    background-size: cover;
+    opacity: 0.22;
+    animation: waveMove 18s linear infinite;
+    filter: blur(0.5px);
+}
+.route-bg3 {
+    background: url('https://svgshare.com/i/14kB.svg') repeat-x top center;
+    background-size: cover;
+    opacity: 0.13;
+    animation: waveMove2 22s linear infinite;
+    filter: blur(1.5px);
+}
+@keyframes gradientFlow {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+@keyframes waveMove {
+    0% {background-position-x: 0;}
+    100% {background-position-x: 1000px;}
+}
+@keyframes waveMove2 {
+    0% {background-position-x: 0;}
+    100% {background-position-x: -1200px;}
+}
+</style>
+<nav class="navbar navbar-expand-lg wow-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle me-1"></i>О нас</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'routes' %}"><i class="fas fa-route me-1"></i>Маршруты</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'tickets' %}"><i class="fas fa-ticket-alt me-1"></i>Мои билеты</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Профиль</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://127.0.0.1:8000/accounts/register/"><i class="fas fa-sign-out-alt me-1"></i>Выход</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Вход</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <h1 class="mb-4">Детали маршрута</h1>
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h3>{{ route.departure_station.city.name }} → {{ route.arrival_station.city.name }}</h3>
-            <p><strong>Дата и время отправления:</strong> {{ route.departure_time|date:"d.m.Y H:i" }}</p>
-            <p><strong>Дата и время прибытия:</strong> {{ route.arrival_time|date:"d.m.Y H:i" }}</p>
-            <p><strong>Перевозчик:</strong> {{ route.carrier }}</p>
-            <p><strong>Модель автобуса:</strong> {{ route.bus_model }}</p>
-            <p><strong>Класс обслуживания:</strong> {{ route.service_class }}</p>
-            <p><strong>Цена:</strong> {{ route.price }} ₽</p>
-            <p><strong>Свободных мест:</strong> {{ route.available_seats }} из {{ route.total_seats }}</p>
-            <a href="{% url 'booking' %}?route_id={{ route.id }}" class="btn btn-primary mt-3">
-                Забронировать билет
-            </a>
+<div class="route-bg" id="route-bg"></div>
+<div class="route-bg2" id="route-bg2"></div>
+<div class="route-bg3" id="route-bg3"></div>
+<div class="container py-5 route-detail-container" style="max-width:700px;z-index:1;position:relative;">
+    <div class="mb-4 text-center" style="font-size:2.2em;font-weight:800;letter-spacing:0.5px;">Детали маршрута</div>
+    <div class="card shadow-sm p-4" style="border-radius:22px;background:#fff;">
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3 gap-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1 justify-content-center">
+                <div class="text-center">
+                    <div style="font-size:2.1em;font-weight:700;">{{ route.departure_station.city.name }}</div>
+                    <div class="text-muted" style="font-size:1em;">{{ route.departure_station.name }}</div>
+                </div>
+                <div class="mx-2" style="font-size:2em;color:#7fd7e7;">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="text-center">
+                    <div style="font-size:2.1em;font-weight:700;">{{ route.arrival_station.city.name }}</div>
+                    <div class="text-muted" style="font-size:1em;">{{ route.arrival_station.name }}</div>
+                </div>
+            </div>
+            <div class="text-center mt-2 mt-md-0">
+                <span class="badge bg-info text-dark fs-6 px-3 py-2" style="background:#e0eafc;color:#2979ff;font-weight:600;">{{ route.price }} ₽</span>
+            </div>
+        </div>
+        <hr>
+        <div class="row g-3 mb-2">
+            <div class="col-12 col-md-6">
+                <div class="mb-2"><i class="fas fa-calendar-alt me-2 text-primary"></i><strong>Отправление:</strong><br> {{ route.departure_time|date:"d.m.Y H:i" }}</div>
+                <div class="mb-2"><i class="fas fa-calendar-check me-2 text-success"></i><strong>Прибытие:</strong><br> {{ route.arrival_time|date:"d.m.Y H:i" }}</div>
+                <div class="mb-2"><i class="fas fa-users me-2 text-info"></i><strong>Свободных мест:</strong> {{ route.available_seats }} из {{ route.total_seats }}</div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="mb-2"><i class="fas fa-building me-2 text-secondary"></i><strong>Перевозчик:</strong> {{ route.carrier }}</div>
+                <div class="mb-2"><i class="fas fa-bus me-2 text-warning"></i><strong>Автобус:</strong> {{ route.bus_model }}</div>
+                <div class="mb-2"><i class="fas fa-star me-2 text-danger"></i><strong>Класс:</strong> {{ route.service_class }}</div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <a href="{% url 'booking' %}?route_id={{ route.id }}" class="btn btn-primary btn-lg px-5" style="border-radius:14px;font-weight:700;">Забронировать билет</a>
         </div>
     </div>
 </div>
+<script>
+// Parallax effect
+const routeBg = document.getElementById('route-bg');
+const routeBg2 = document.getElementById('route-bg2');
+const routeBg3 = document.getElementById('route-bg3');
+document.addEventListener('mousemove', function(e) {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    routeBg.style.transform = `translate(${x}px, ${y}px) scale(1.03)`;
+    routeBg2.style.transform = `translate(${x/2}px, ${y/2}px) scale(1.01)`;
+    routeBg3.style.transform = `translate(${x/3}px, ${y/3}px) scale(1.01)`;
+});
+document.addEventListener('mouseleave', function() {
+    routeBg.style.transform = '';
+    routeBg2.style.transform = '';
+    routeBg3.style.transform = '';
+});
+</script>
+{% endblock %}
+
+{% block footer %}
+<footer style="background:rgba(255,255,255,0.93);border-top:2px solid #e0eafc;padding:2.2rem 0 1.2rem 0;margin-top:3rem;box-shadow:0 -2px 24px 0 rgba(80,120,200,0.07);">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <div class="mb-2 mb-md-0" style="font-weight:700;font-size:1.1em;color:#7fd7e7;">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking © 2024
+        </div>
+        <div class="mb-2 mb-md-0">
+            <a href="mailto:info@busbooking.ru" class="me-3 text-primary"><i class="fas fa-envelope"></i> info@busbooking.ru</a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-vk"></i></a>
+            <a href="#" class="text-primary"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div style="font-size:0.95em;color:#b2e0e6;">Сделано с любовью для путешественников</div>
+    </div>
+</footer>
 {% endblock %} 

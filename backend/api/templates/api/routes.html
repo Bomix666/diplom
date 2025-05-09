@@ -61,129 +61,67 @@
     background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
     text-shadow: 0 2px 12px #7fd7e7;
 }
-
-.routes-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-    animation: fadeInPage 1.2s cubic-bezier(.4,1.4,.6,1);
-    padding-top: 5.5rem;
-    padding-bottom: 2.5rem;
+.wow-navbar .navbar-toggler {
+    border: none;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
 }
-
-.routes-title {
-    font-weight: 900;
-    font-size: 2.7rem;
-    letter-spacing: -1.5px;
-    text-align: center;
-    margin-bottom: 1.2rem;
-    color: #181c24;
-    text-shadow: 0 2px 12px #e0eafc;
-}
-
-.theme-dark .routes-title {
-    color: #e0eafc;
-    text-shadow: 0 2px 12px #232a36;
-}
-
-.routes-search-form {
-    max-width: 900px;
-    width: 100%;
-    margin: 0 auto 2.5rem auto;
-    background: rgba(255,255,255,0.93);
-    border-radius: 22px;
-    box-shadow: 0 4px 24px 0 rgba(80,120,200,0.10);
-    padding: 2.2rem 1.5rem 1.5rem 1.5rem;
-    position: relative;
-    z-index: 2;
-    animation: fadeInUp 1.1s cubic-bezier(.4,1.4,.6,1);
-}
-
-.theme-dark .routes-search-form {
-    background: rgba(24,28,36,0.98);
-}
-
-.routes-list {
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 0 1rem;
-}
-
-.route-card {
-    background: rgba(255,255,255,0.97);
-    border-radius: 22px;
-    box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.18);
-    padding: 2rem 1.5rem;
-    transition: box-shadow 0.2s, transform 0.2s;
-    animation: fadeInUp 1.2s cubic-bezier(.4,1.4,.6,1);
-}
-
-.route-card:hover {
-    box-shadow: 0 16px 48px 0 rgba(127,215,231,0.18);
-    transform: translateY(-4px) scale(1.012);
-}
-
-.theme-dark .route-card {
-    background: rgba(24,28,36,0.98);
-    color: #e0eafc;
-}
-
-.route-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.route-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.route-price {
-    font-size: 1.5rem;
-    font-weight: 700;
+.wow-navbar i {
+    font-size: 1.25em;
+    margin-right: 0.3em;
     color: #7fd7e7;
+    filter: drop-shadow(0 1px 4px #b2e0e6);
+    transition: color 0.2s;
 }
-
-.route-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.wow-navbar .nav-link.active i, .wow-navbar .nav-link:focus i, .wow-navbar .nav-link:hover i {
+    color: #fff;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
 }
-
-.route-detail {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.route-detail i {
-    color: #7fd7e7;
-}
-
-@keyframes fadeInPage {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(60px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 @media (max-width: 900px) {
-    .routes-container { padding-top: 2.5rem; }
-    .routes-list { grid-template-columns: 1fr; }
-    .route-card { padding: 1.5rem 1rem; }
+    .wow-navbar { border-radius: 0 0 14px 14px; }
+    .wow-navbar .navbar-brand { font-size: 1.1em; }
+    .wow-navbar .nav-link { font-size: 1em; padding: 0.4em 0.7em; }
+}
+.routes-bg, .routes-bg2, .routes-bg3 {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0;
+    will-change: transform;
+    pointer-events: none;
+}
+.routes-bg {
+    background: linear-gradient(270deg, #e0eafc, #b2e0e6, #f3eaff, #e0f7e9, #e0eafc);
+    background-size: 400% 400%;
+    animation: gradientFlow 13s ease-in-out infinite;
+    opacity: 1;
+    transition: opacity 0.5s;
+    filter: blur(2px);
+}
+.routes-bg2 {
+    background: url('https://svgshare.com/i/14kA.svg') repeat-x bottom center;
+    background-size: cover;
+    opacity: 0.22;
+    animation: waveMove 18s linear infinite;
+    filter: blur(0.5px);
+}
+.routes-bg3 {
+    background: url('https://svgshare.com/i/14kB.svg') repeat-x top center;
+    background-size: cover;
+    opacity: 0.13;
+    animation: waveMove2 22s linear infinite;
+    filter: blur(1.5px);
+}
+@keyframes gradientFlow {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+@keyframes waveMove {
+    0% {background-position-x: 0;}
+    100% {background-position-x: 1000px;}
+}
+@keyframes waveMove2 {
+    0% {background-position-x: 0;}
+    100% {background-position-x: -1200px;}
 }
 </style>
 <nav class="navbar navbar-expand-lg wow-navbar">
@@ -197,8 +135,15 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Главная</a></li>
-                <li class="nav-item"><a class="nav-link active" href="{% url 'routes' %}"><i class="fas fa-route me-1"></i>Маршруты</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle me-1"></i>О нас</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{% url 'routes' %}"><i class="fas fa-route me-1"></i>Маршруты</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'tickets' %}"><i class="fas fa-ticket-alt me-1"></i>Мои билеты</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Профиль</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://127.0.0.1:8000/accounts/register/"><i class="fas fa-sign-out-alt me-1"></i>Выход</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Вход</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -206,61 +151,160 @@
 {% endblock %}
 
 {% block content %}
-<div class="routes-container">
-    <h1 class="routes-title">Маршруты</h1>
-    
-    <div class="routes-search-form">
-        <form method="GET" class="row g-3">
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="from" placeholder="Откуда" value="{{ request.GET.from }}">
-            </div>
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="to" placeholder="Куда" value="{{ request.GET.to }}">
-            </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-2"></i>Найти
+<div class="routes-bg" id="routes-bg"></div>
+<div class="routes-bg2" id="routes-bg2"></div>
+<div class="routes-bg3" id="routes-bg3"></div>
+<div class="container" style="padding-top:5.5rem;max-width:900px;z-index:1;position:relative;">
+    <form id="search-form" class="search-form d-flex align-items-center mb-3 p-3 flex-wrap gap-2" method="get" style="background:#fff;border-radius:18px;box-shadow:0 2px 12px 0 rgba(80,120,200,0.07);">
+        <input type="text" class="form-control form-control-lg flex-grow-1" id="from-input" name="departure_city" placeholder="Откуда" value="{{ request.GET.departure_city|default:'Москва' }}" style="max-width:180px;font-weight:600;">
+        <span class="vr mx-2" style="height:2.5em;"></span>
+        <button type="button" class="btn btn-link p-0 mx-2" id="swap-btn" style="font-size:1.5em;"><i class="fas fa-exchange-alt"></i></button>
+        <span class="vr mx-2" style="height:2.5em;"></span>
+        <input type="text" class="form-control form-control-lg flex-grow-1" id="to-input" name="arrival_city" placeholder="Куда" value="{{ request.GET.arrival_city|default:'' }}" style="max-width:180px;font-weight:600;">
+        <input type="date" class="form-control form-control-lg flex-grow-1 ms-2" name="date" value="{{ request.GET.date|default:'' }}" style="max-width:160px;">
+        <button class="btn btn-warning btn-lg px-4 flex-grow-1 ms-2" type="submit" style="font-weight:700;border-radius:12px;min-width:160px;">Найти</button>
+    </form>
+    <div class="popular-routes-minimal d-flex flex-row align-items-center flex-wrap gap-3 mb-4 ps-1" style="font-size:1.15em;">
+        {% if popular_routes %}
+            {% for route in popular_routes %}
+                <button type="button" class="popular-btn-minimal btn btn-link p-0 d-flex align-items-center gap-1" data-from="{{ route.departure_city }}" data-to="{{ route.arrival_city }}" style="color:#373a6d;text-decoration:none;font-weight:500;">
+                    <i class="far fa-heart" style="color:#b2b2c3;"></i>{{ route.departure_city }} – {{ route.arrival_city }}
                 </button>
-            </div>
-        </form>
+            {% endfor %}
+        {% else %}
+            <button type="button" class="popular-btn-minimal btn btn-link p-0 d-flex align-items-center gap-1" data-from="Москва" data-to="Казань" style="color:#373a6d;text-decoration:none;font-weight:500;">
+                <i class="far fa-heart" style="color:#b2b2c3;"></i>Москва – Казань
+            </button>
+            <button type="button" class="popular-btn-minimal btn btn-link p-0 d-flex align-items-center gap-1" data-from="Калуга" data-to="Москва" style="color:#373a6d;text-decoration:none;font-weight:500;">
+                <i class="far fa-heart" style="color:#b2b2c3;"></i>Калуга – Москва
+            </button>
+            <button type="button" class="popular-btn-minimal btn btn-link p-0 d-flex align-items-center gap-1" data-from="Москва" data-to="Нижний Новгород" style="color:#373a6d;text-decoration:none;font-weight:500;">
+                <i class="far fa-heart" style="color:#b2b2c3;"></i>Москва – Нижний Новгород
+            </button>
+        {% endif %}
     </div>
-
-    <div class="routes-list">
+    <!-- Вывод найденных маршрутов -->
+    {% if routes %}
+    <div class="row g-4 mb-4">
         {% for route in routes %}
-        <div class="route-card">
-            <div class="route-info">
-                <div class="route-header">
-                    <h3 class="route-title">{{ route.title }}</h3>
-                    <span class="route-price">{{ route.price }} ₽</span>
-                </div>
-                <div class="route-details">
-                    <div class="route-detail">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>{{ route.from_city }} → {{ route.to_city }}</span>
-                    </div>
-                    <div class="route-detail">
-                        <i class="fas fa-clock"></i>
-                        <span>{{ route.departure_time }} - {{ route.arrival_time }}</span>
-                    </div>
-                    <div class="route-detail">
-                        <i class="fas fa-bus"></i>
-                        <span>{{ route.bus_number }}</span>
-                    </div>
-                    <div class="route-detail">
-                        <i class="fas fa-chair"></i>
-                        <span>Свободных мест: {{ route.available_seats }}</span>
+            <div class="col-md-12">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
+                        <div>
+                            <h5 class="mb-1">{{ route.departure_station.city.name }} — {{ route.arrival_station.city.name }}</h5>
+                            <div class="text-muted mb-1">
+                                {{ route.departure_time|date:"d.m.Y H:i" }} — {{ route.arrival_time|date:"d.m.Y H:i" }}
+                            </div>
+                            <div class="mb-1"><strong>Перевозчик:</strong> {{ route.carrier }}</div>
+                            <div class="mb-1"><strong>Мест:</strong> {{ route.available_seats }} из {{ route.total_seats }}</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="mb-2"><strong>{{ route.price }} ₽</strong></div>
+                            <a href="{% url 'route_detail' route.id %}" class="btn btn-primary">Подробнее</a>
+                        </div>
                     </div>
                 </div>
-                <a href="{% url 'route_detail' route.id %}" class="btn btn-primary mt-3">
-                    <i class="fas fa-ticket-alt me-2"></i>Забронировать
-                </a>
             </div>
-        </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <p class="lead">Маршруты не найдены</p>
-        </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="alert alert-info mt-4">
+        <i class="fas fa-info-circle me-2"></i>
+        Маршруты не найдены. Попробуйте изменить параметры поиска.
+    </div>
+    {% endif %}
+    <style>
+    .search-form input.form-control-lg {
+        background: #f8fafc;
+        border: 1.5px solid #e0eafc;
+        font-size: 1.15em;
+        transition: border 0.18s;
+    }
+    .search-form input.form-control-lg:focus {
+        border: 1.5px solid #7fd7e7;
+        box-shadow: 0 0 0 2px #b2e0e6;
+    }
+    .search-form .btn-warning {
+        background: #ffe066;
+        color: #181c24;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(255,224,102,0.13);
+        transition: background 0.18s, color 0.18s;
+    }
+    .search-form .btn-warning:hover {
+        background: #ffd600;
+        color: #181c24;
+    }
+    .popular-btn {
+        font-size: 1.08em;
+        font-weight: 600;
+        border-radius: 14px;
+        border: 1.5px solid #2979ff;
+        color: #2979ff;
+        background: #fff;
+        transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+        box-shadow: 0 2px 8px 0 rgba(127,215,231,0.07);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5em;
+    }
+    .popular-btn:hover, .popular-btn.active {
+        background: #e0eafc;
+        color: #181c24;
+        box-shadow: 0 4px 16px 0 #7fd7e7;
+        border-color: #7fd7e7;
+    }
+    </style>
 </div>
+<script>
+// Parallax effect
+const routesBg = document.getElementById('routes-bg');
+const routesBg2 = document.getElementById('routes-bg2');
+const routesBg3 = document.getElementById('routes-bg3');
+document.addEventListener('mousemove', function(e) {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    routesBg.style.transform = `translate(${x}px, ${y}px) scale(1.03)`;
+    routesBg2.style.transform = `translate(${x/2}px, ${y/2}px) scale(1.01)`;
+    routesBg3.style.transform = `translate(${x/3}px, ${y/3}px) scale(1.01)`;
+});
+document.addEventListener('mouseleave', function() {
+    routesBg.style.transform = '';
+    routesBg2.style.transform = '';
+    routesBg3.style.transform = '';
+});
+// Swap 'from' and 'to'
+document.getElementById('swap-btn').onclick = function() {
+    const from = document.getElementById('from-input');
+    const to = document.getElementById('to-input');
+    [from.value, to.value] = [to.value, from.value];
+};
+// Кликабельность популярных маршрутов
+document.querySelectorAll('.popular-btn-minimal').forEach(btn => {
+    btn.onclick = function() {
+        document.getElementById('from-input').value = btn.dataset.from;
+        document.getElementById('to-input').value = btn.dataset.to;
+        document.getElementById('to-input').focus();
+        document.getElementById('search-form').submit();
+    };
+});
+</script>
+{% endblock %}
+
+{% block footer %}
+<footer style="background:rgba(255,255,255,0.93);border-top:2px solid #e0eafc;padding:2.2rem 0 1.2rem 0;margin-top:3rem;box-shadow:0 -2px 24px 0 rgba(80,120,200,0.07);">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <div class="mb-2 mb-md-0" style="font-weight:700;font-size:1.1em;color:#7fd7e7;">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking © 2024
+        </div>
+        <div class="mb-2 mb-md-0">
+            <a href="mailto:info@busbooking.ru" class="me-3 text-primary"><i class="fas fa-envelope"></i> info@busbooking.ru</a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-vk"></i></a>
+            <a href="#" class="text-primary"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div style="font-size:0.95em;color:#b2e0e6;">Сделано с любовью для путешественников</div>
+    </div>
+</footer>
 {% endblock %} 
