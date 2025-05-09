@@ -235,6 +235,148 @@
     .home-container { padding-top: 2.5rem; }
     .home-feature-card { padding: 1rem 0.5rem; }
 }
+/* Анимация кнопок */
+.btn-wow {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.22s, color 0.22s, box-shadow 0.22s, transform 0.13s;
+    box-shadow: 0 2px 12px 0 rgba(127,215,231,0.10);
+    will-change: transform;
+}
+.btn-wow:active {
+    transform: scale(0.96);
+}
+.btn-wow::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 0; height: 0;
+    background: rgba(127,215,231,0.18);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s cubic-bezier(.4,1.4,.6,1), height 0.4s cubic-bezier(.4,1.4,.6,1), opacity 0.3s;
+    opacity: 0;
+    z-index: 0;
+}
+.btn-wow:focus::after, .btn-wow:hover::after {
+    width: 220%; height: 220%; opacity: 1;
+}
+.btn-wow:focus, .btn-wow:hover {
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 24px 0 #7fd7e7;
+}
+
+/* Блок отзывов */
+.reviews-section {
+    margin-top: 3.5rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    animation: fadeInUp 1.2s cubic-bezier(.4,1.4,.6,1);
+}
+.reviews-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: #181c24;
+    letter-spacing: -1px;
+}
+.theme-dark .reviews-title { color: #e0eafc; }
+.reviews-slider {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+.review-card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 rgba(80, 120, 200, 0.18);
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    min-width: 320px;
+    max-width: 340px;
+    flex: 1 1 320px;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    position: relative;
+    animation: fadeInUp 1.2s cubic-bezier(.4,1.4,.6,1);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.review-card:hover {
+    box-shadow: 0 16px 48px 0 rgba(127,215,231,0.18);
+    transform: translateY(-4px) scale(1.012);
+}
+.theme-dark .review-card {
+    background: rgba(24,28,36,0.98);
+    color: #e0eafc;
+}
+.review-author {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.review-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: #e0eafc;
+    margin-right: 1rem;
+    object-fit: cover;
+    border: 2.5px solid #7fd7e7;
+}
+.review-name {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: #7fd7e7;
+}
+.review-text {
+    font-size: 1.08em;
+    color: #181c24;
+    margin-bottom: 0.7rem;
+}
+.theme-dark .review-text { color: #e0eafc; }
+.review-rating {
+    color: #ffc107;
+    font-size: 1.2em;
+}
+.review-date {
+    font-size: 0.95em;
+    color: #b2e0e6;
+}
+.reviews-arrows {
+    margin-top: 1.2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+}
+.reviews-arrow-btn {
+    background: #fff;
+    border: 2px solid #7fd7e7;
+    color: #7fd7e7;
+    border-radius: 50%;
+    width: 44px; height: 44px;
+    font-size: 1.5em;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px 0 rgba(127,215,231,0.08);
+    cursor: pointer;
+}
+.reviews-arrow-btn:hover {
+    background: #7fd7e7;
+    color: #fff;
+    box-shadow: 0 4px 16px 0 #7fd7e7;
+}
+.theme-dark .reviews-arrow-btn {
+    background: #181c24;
+    color: #7fd7e7;
+    border: 2px solid #7fd7e7;
+}
+.theme-dark .reviews-arrow-btn:hover {
+    background: #7fd7e7;
+    color: #181c24;
+}
 </style>
 <nav class="navbar navbar-expand-lg wow-navbar">
     <div class="container">
@@ -303,6 +445,59 @@
         </div>
     </div>
 </div>
+<div class="reviews-section">
+    <div class="reviews-title">Отзывы наших пользователей</div>
+    <div class="reviews-slider" id="reviews-slider">
+        <div class="review-card">
+            <div class="review-author">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="review-avatar" alt="">
+                <div>
+                    <div class="review-name">Алексей П.</div>
+                    <div class="review-date">12.04.2024</div>
+                </div>
+            </div>
+            <div class="review-text">Очень удобный сервис! Купил билет за 2 минуты, всё понятно и быстро. Спасибо!</div>
+            <div class="review-rating">★★★★★</div>
+        </div>
+        <div class="review-card">
+            <div class="review-author">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="review-avatar" alt="">
+                <div>
+                    <div class="review-name">Мария К.</div>
+                    <div class="review-date">05.04.2024</div>
+                </div>
+            </div>
+            <div class="review-text">Понравился дизайн и простота поиска. Поддержка ответила за минуту!</div>
+            <div class="review-rating">★★★★★</div>
+        </div>
+        <div class="review-card">
+            <div class="review-author">
+                <img src="https://randomuser.me/api/portraits/men/65.jpg" class="review-avatar" alt="">
+                <div>
+                    <div class="review-name">Игорь С.</div>
+                    <div class="review-date">28.03.2024</div>
+                </div>
+            </div>
+            <div class="review-text">Бронирую билеты только здесь. Всё работает стабильно, рекомендую!</div>
+            <div class="review-rating">★★★★★</div>
+        </div>
+        <div class="review-card">
+            <div class="review-author">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" class="review-avatar" alt="">
+                <div>
+                    <div class="review-name">Екатерина Л.</div>
+                    <div class="review-date">19.03.2024</div>
+                </div>
+            </div>
+            <div class="review-text">Очень удобно, что можно выбрать место и сразу оплатить. Спасибо за сервис!</div>
+            <div class="review-rating">★★★★★</div>
+        </div>
+    </div>
+    <div class="reviews-arrows">
+        <button class="reviews-arrow-btn" onclick="scrollReviews(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button class="reviews-arrow-btn" onclick="scrollReviews(1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+</div>
 <script>
 // Parallax effect
 const homeBg = document.getElementById('home-bg');
@@ -320,5 +515,18 @@ document.addEventListener('mouseleave', function() {
     homeBg2.style.transform = '';
     homeBg3.style.transform = '';
 });
+// WOW-анимация кнопок
+const wowBtns = document.querySelectorAll('.btn-wow');
+wowBtns.forEach(btn => {
+    btn.addEventListener('click', e => {
+        btn.classList.add('clicked');
+        setTimeout(() => btn.classList.remove('clicked'), 200);
+    });
+});
+// Слайдер отзывов
+function scrollReviews(dir) {
+    const slider = document.getElementById('reviews-slider');
+    slider.scrollBy({ left: dir * 360, behavior: 'smooth' });
+}
 </script>
 {% endblock %} 
