@@ -35,7 +35,7 @@ class TicketsPageView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Мои билеты'
-        context['tickets'] = Ticket.objects.filter(user=self.request.user)
+        context['tickets'] = Ticket.objects.filter(user=self.request.user).exclude(status='cancelled')
         return context
 
 class RoutesPageView(TemplateView):

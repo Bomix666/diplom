@@ -51,7 +51,7 @@ window.addEventListener('click', function(e) {
         const ticketId = e.target.dataset.ticketId;
         const card = e.target.closest('.ticket-card');
         if (confirm('Вы уверены, что хотите отменить этот билет?')) {
-            fetch(`/tickets/cancel/${ticketId}/`, {
+            fetch(`/api/tickets/cancel/${ticketId}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken'),

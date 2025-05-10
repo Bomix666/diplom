@@ -122,6 +122,64 @@
     0% {background-position-x: 0;}
     100% {background-position-x: -1200px;}
 }
+.booking-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    gap: 0;
+}
+.booking-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 110px;
+    position: relative;
+    z-index: 2;
+}
+.booking-step-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e0eafc;
+    color: #7fd7e7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.3em;
+    margin-bottom: 0.3em;
+    border: 2.5px solid #7fd7e7;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.booking-step.active .booking-step-circle {
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    color: #fff;
+    border: 2.5px solid #7fd7e7;
+    box-shadow: 0 2px 12px #7fd7e7;
+}
+.booking-step span {
+    font-size: 1em;
+    color: #181c24;
+    font-weight: 600;
+    text-align: center;
+}
+.booking-step.active span {
+    color: #7fd7e7;
+}
+.booking-step-line {
+    flex: 1 1 60px;
+    height: 3px;
+    background: #e0eafc;
+    margin: 0 0.5em;
+    border-radius: 2px;
+    z-index: 1;
+}
+@media (max-width: 600px) {
+    .booking-steps { flex-direction: column; gap: 0.5em; }
+    .booking-step-line { display: none; }
+    .booking-step { min-width: 0; }
+}
 </style>
 <nav class="navbar navbar-expand-lg wow-navbar">
     <div class="container">

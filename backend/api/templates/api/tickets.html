@@ -1,4 +1,5 @@
 {% extends 'api/base.html' %}
+{% load static %}
 
 {% block navbar %}
 <style>
@@ -365,4 +366,8 @@ document.addEventListener('mouseleave', function() {
     ticketsBg3.style.transform = '';
 });
 </script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'api/custom.js' %}"></script>
 {% endblock %} 
