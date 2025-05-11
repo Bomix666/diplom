@@ -1,96 +1,370 @@
 {% extends 'api/base.html' %}
 
+{% block navbar %}
+<style>
+.wow-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(90deg, #e0eafc 0%, #b2e0e6 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.18), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    animation: fadeInNavbar 0.7s cubic-bezier(.4,1.4,.6,1);
+    border-radius: 0 0 22px 22px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.theme-dark .wow-navbar {
+    background: linear-gradient(90deg, #181c24 0%, #232a36 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(80,120,200,0.28), 0 1.5px 0 0 #7fd7e7;
+    border-bottom: 2.5px solid #7fd7e7;
+}
+.wow-navbar .navbar-brand {
+    color: #1a2a3a !important;
+    font-weight: 800;
+    font-size: 1.5em;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.08);
+    transition: color 0.2s;
+}
+.theme-dark .wow-navbar .navbar-brand {
+    color: #7fd7e7 !important;
+    text-shadow: 0 2px 8px rgba(127,215,231,0.18);
+}
+.wow-navbar .nav-link {
+    color: #1a2a3a !important;
+    font-weight: 600;
+    font-size: 1.13em;
+    margin-left: 0.7em;
+    margin-right: 0.2em;
+    letter-spacing: 0.2px;
+    transition: color 0.18s, text-shadow 0.18s;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.07);
+    border-radius: 8px;
+    padding: 0.45em 1em;
+}
+.theme-dark .wow-navbar .nav-link {
+    color: #e0eafc !important;
+    text-shadow: 0 1px 6px rgba(127,215,231,0.13);
+}
+.wow-navbar .nav-link.active, .wow-navbar .nav-link:focus, .wow-navbar .nav-link:hover {
+    color: #fff !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    box-shadow: 0 2px 12px 0 rgba(127,215,231,0.13);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.theme-dark .wow-navbar .nav-link.active, .theme-dark .wow-navbar .nav-link:focus, .theme-dark .wow-navbar .nav-link:hover {
+    color: #181c24 !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    text-shadow: 0 2px 12px #7fd7e7;
+}
+.wow-navbar .navbar-toggler {
+    border: none;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+.wow-navbar i {
+    font-size: 1.25em;
+    margin-right: 0.3em;
+    color: #7fd7e7;
+    filter: drop-shadow(0 1px 4px #b2e0e6);
+    transition: color 0.2s;
+}
+.wow-navbar .nav-link.active i, .wow-navbar .nav-link:focus i, .wow-navbar .nav-link:hover i {
+    color: #fff;
+    filter: drop-shadow(0 2px 8px #7fd7e7);
+}
+@media (max-width: 900px) {
+    .wow-navbar { border-radius: 0 0 14px 14px; }
+    .wow-navbar .navbar-brand { font-size: 1.1em; }
+    .wow-navbar .nav-link { font-size: 1em; padding: 0.4em 0.7em; }
+}
+.profile-bg, .profile-bg2, .profile-bg3 {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0;
+    will-change: transform;
+    pointer-events: none;
+}
+.profile-bg {
+    background: linear-gradient(270deg, #e0eafc, #b2e0e6, #f3eaff, #e0f7e9, #e0eafc);
+    background-size: 400% 400%;
+    animation: gradientFlow 13s ease-in-out infinite;
+    opacity: 1;
+    transition: opacity 0.5s;
+    filter: blur(2px);
+}
+.profile-bg2 {
+    background: url('https://svgshare.com/i/14kA.svg') repeat-x bottom center;
+    background-size: cover;
+    opacity: 0.22;
+    animation: waveMove 18s linear infinite;
+    filter: blur(0.5px);
+}
+.profile-bg3 {
+    background: url('https://svgshare.com/i/14kB.svg') repeat-x top center;
+    background-size: cover;
+    opacity: 0.13;
+    animation: waveMove2 22s linear infinite;
+    filter: blur(1.5px);
+}
+@keyframes gradientFlow {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+@keyframes waveMove {
+    0% {background-position-x: 0;}
+    100% {background-position-x: 1000px;}
+}
+@keyframes waveMove2 {
+    0% {background-position-x: 0;}
+    100% {background-position-x: -1200px;}
+}
+.profile-card input[type="text"],
+.profile-card input[type="email"],
+.profile-card input[type="date"],
+.profile-card input[type="number"],
+.profile-card select {
+    background: #f8fafc;
+    border: 1.5px solid #e0eafc;
+    border-radius: 12px;
+    font-size: 1.13em;
+    padding: 0.85em 1.1em;
+    margin-bottom: 0.5em;
+    box-shadow: 0 2px 8px 0 rgba(127,215,231,0.07);
+    transition: border 0.18s, box-shadow 0.18s;
+    min-height: 48px;
+}
+.profile-card input[type="text"]:focus,
+.profile-card input[type="email"]:focus,
+.profile-card input[type="date"]:focus,
+.profile-card input[type="number"]:focus,
+.profile-card select:focus {
+    border: 1.5px solid #7fd7e7;
+    box-shadow: 0 0 0 2px #b2e0e6;
+    background: #fff;
+}
+.profile-card input[type="text"]::placeholder,
+.profile-card input[type="email"]::placeholder,
+.profile-card input[type="date"]::placeholder,
+.profile-card input[type="number"]::placeholder {
+    color: #b2b2c3;
+    opacity: 1;
+    font-size: 1em;
+}
+.profile-card label.form-label {
+    font-weight: 600;
+    color: #373a6d;
+    margin-bottom: 0.2em;
+    font-size: 1.08em;
+}
+.profile-card button.btn-primary {
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%);
+    color: #234;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.18em;
+    box-shadow: 0 2px 12px 0 rgba(127,215,231,0.10);
+    padding: 0.9em 1.2em;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.profile-card button.btn-primary:hover {
+    background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%);
+    color: #181c24;
+    box-shadow: 0 4px 16px 0 #7fd7e7;
+}
+.profile-floating-label {
+    position: relative;
+    margin-bottom: 1.5em;
+}
+.profile-floating-label input,
+.profile-floating-label select {
+    width: 100%;
+    background: #f8fafc;
+    border: 1.5px solid #e0eafc;
+    border-radius: 12px;
+    font-size: 1.13em;
+    padding: 1.15em 1.1em 0.45em 1.1em;
+    box-shadow: 0 2px 8px 0 rgba(127,215,231,0.07);
+    transition: border 0.18s, box-shadow 0.18s;
+    min-height: 48px;
+    outline: none;
+}
+.profile-floating-label input:focus,
+.profile-floating-label select:focus {
+    border: 1.5px solid #7fd7e7;
+    box-shadow: 0 0 0 2px #b2e0e6;
+    background: #fff;
+}
+.profile-floating-label label {
+    position: absolute;
+    left: 1.1em;
+    top: 1.1em;
+    color: #b2b2c3;
+    font-size: 1.08em;
+    font-weight: 500;
+    pointer-events: none;
+    background: transparent;
+    transition: all 0.22s cubic-bezier(.4,1.4,.6,1);
+    z-index: 2;
+}
+.profile-floating-label input:focus + label,
+.profile-floating-label input:not(:placeholder-shown) + label,
+.profile-floating-label select:focus + label,
+.profile-floating-label select:not([value=""]) + label {
+    top: -0.7em;
+    left: 0.9em;
+    font-size: 0.93em;
+    color: #7fd7e7;
+    background: #fff;
+    padding: 0 0.3em;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px 0 rgba(127,215,231,0.04);
+}
+.profile-card .profile-stats {
+    margin: 1.5em 0 0.5em 0;
+    text-align: center;
+    font-size: 1.15em;
+    font-weight: 700;
+    color: #7fd7e7;
+    background: #e0eafc;
+    border-radius: 12px;
+    padding: 0.7em 0;
+    box-shadow: 0 2px 8px 0 rgba(127,215,231,0.07);
+    letter-spacing: 0.5px;
+    animation: fadeInUp 0.7s cubic-bezier(.4,1.4,.6,1);
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+<nav class="navbar navbar-expand-lg wow-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle me-1"></i>О нас</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'routes' %}"><i class="fas fa-route me-1"></i>Маршруты</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'tickets' %}"><i class="fas fa-ticket-alt me-1"></i>Мои билеты</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Профиль</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://127.0.0.1:8000/accounts/register/"><i class="fas fa-sign-out-alt me-1"></i>Выход</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Вход</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
-{% if user.is_staff %}
-<div class="row justify-content-center mt-4">
-    <div class="col-lg-8 col-md-10">
-        <div class="profile-card mb-4" style="background:#f3eaff; border:2px solid #a084e8; display:flex; align-items:center; gap:2.5rem;">
-            <div class="text-center" style="flex:0 0 160px;">
-                <div class="profile-avatar mb-3" style="background:#a084e8;color:#fff;width:110px;height:110px;font-size:3.5rem;">
-                    <i class="fas fa-user-tie"></i>
+<div class="profile-bg" id="profile-bg"></div>
+<div class="profile-bg2" id="profile-bg2"></div>
+<div class="profile-bg3" id="profile-bg3"></div>
+<div class="container py-5" style="max-width:700px;z-index:1;position:relative;">
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-sm p-4" style="border-radius:22px;background:#fff;min-width:320px;max-width:520px;width:100%;">
+            <div class="text-center mb-4">
+                <div class="profile-avatar mb-3 mx-auto" style="background:#7fd7e7;color:#fff;width:110px;height:110px;font-size:3.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-user{% if user.is_staff %}-tie{% else %}-circle{% endif %}"></i>
                 </div>
+                <h2 class="mb-1" style="font-weight:800;">{{ user.get_full_name|default:user.username }}</h2>
+                <div class="mb-2 text-muted">{{ user.email }}</div>
+                {% if user.is_staff %}
+                <span class="badge bg-secondary fs-6 mb-2" style="height:2.1em;display:inline-flex;align-items:center;">Сотрудник</span>
+                {% endif %}
             </div>
-            <div style="flex:1;">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <div>
-                        <h2 class="mb-0">{{ user.get_full_name|default:user.username }}</h2>
-                        <div class="text-muted">{{ user.email }}</div>
-                    </div>
-                    <span class="badge bg-secondary fs-6" style="height:2.1em;display:flex;align-items:center;">Сотрудник</span>
-                </div>
-                <div class="mb-2"><b>Отдел:</b> {{ profile.department|default:'—' }}</div>
-                <div class="mb-2"><b>Телефон:</b> {{ profile.phone|default:'—' }}</div>
-                <div class="mb-2"><b>Дата рождения:</b> {{ profile.birth_date|date:'d.m.Y'|default:'—' }}</div>
-                <div class="mb-2"><b>Баланс:</b> {{ profile.balance|default:'0.00' }} ₽</div>
-                <div class="d-flex gap-2 mt-3">
-                    <a href="mailto:{{ user.email }}" class="btn btn-outline-primary"><i class="fas fa-envelope me-1"></i>Отправить письмо</a>
-                    <a href="#" class="btn btn-outline-secondary"><i class="fas fa-file-signature me-1"></i>Сформировать подпись</a>
-                </div>
+            <div class="mb-2"><b>Отдел:</b> {{ profile.department|default:'—' }}</div>
+            <div class="mb-2"><b>Телефон:</b> {{ profile.phone|default:'—' }}</div>
+            <div class="mb-2"><b>Дата рождения:</b> {{ profile.birth_date|date:'d.m.Y'|default:'—' }}</div>
+            <div class="mb-2"><b>Баланс:</b> {{ profile.balance|default:'0.00' }} ₽</div>
+            <div class="d-flex gap-2 mt-3 flex-wrap">
+                <a href="mailto:{{ user.email }}" class="btn btn-outline-primary flex-grow-1"><i class="fas fa-envelope me-1"></i>Письмо</a>
+                <a href="#" class="btn btn-outline-secondary flex-grow-1"><i class="fas fa-file-signature me-1"></i>Подпись</a>
             </div>
-        </div>
-    </div>
-</div>
-{% else %}
-<div class="row">
-    <div class="col-md-4">
-        <div class="profile-card text-center">
-            <div class="profile-avatar mb-2">
-                <i class="fas fa-user-circle"></i>
+            <div class="profile-stats">
+                Активных поездок: {{ tickets.active.count|default:0 }}
             </div>
-            <h2 class="mb-1">{{ user.username }}</h2>
-            <div class="mb-2 text-muted">{{ user.email }}</div>
-            <div class="profile-balance mb-3">Баланс: {{ profile.balance|default:"0.00" }} ₽</div>
-            <a href="#" class="btn profile-btn w-100 mb-2">✏️ Редактировать профиль</a>
-            <a href="#" class="btn btn-outline-secondary w-100">🔑 Изменить пароль</a>
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="profile-card">
-            <div class="profile-tabs">
-                <button class="profile-tab active" type="button">Всего билетов</button>
-                <button class="profile-tab" type="button">Активные билеты</button>
-                <button class="profile-tab" type="button">Завершённые поездки</button>
-            </div>
-            <div class="profile-stats-content" style="display:block;">
-                <h4>Всего билетов: {{ tickets.count }}</h4>
-            </div>
-            <div class="profile-stats-content" style="display:none;">
-                <h4>Активные билеты: {{ tickets.active.count }}</h4>
-            </div>
-            <div class="profile-stats-content" style="display:none;">
-                <h4>Завершённые поездки: {{ tickets.completed.count }}</h4>
-            </div>
-        </div>
-        <div class="profile-card">
-            <h4 class="mb-3">Личные данные</h4>
-            <form method="post">
+            <hr class="my-4">
+            <h4 class="mb-3 text-center">Личные данные</h4>
+            <form method="post" autocomplete="off">
                 {% csrf_token %}
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="id_first_name" class="form-label">Имя:</label>
-                        {{ user_form.first_name }}
+                        <div class="profile-floating-label">
+                            {{ user_form.first_name }}
+                            <label for="id_first_name">Имя</label>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <label for="id_last_name" class="form-label">Фамилия:</label>
-                        {{ user_form.last_name }}
+                        <div class="profile-floating-label">
+                            {{ user_form.last_name }}
+                            <label for="id_last_name">Фамилия</label>
+                        </div>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="id_email" class="form-label">Email:</label>
+                <div class="profile-floating-label">
                     {{ user_form.email }}
+                    <label for="id_email">Email</label>
                 </div>
-                <div class="mb-3">
-                    <label for="id_phone" class="form-label">Телефон:</label>
+                <div class="profile-floating-label">
                     {{ profile_form.phone }}
+                    <label for="id_phone">Телефон</label>
                 </div>
-                <div class="mb-3">
-                    <label for="id_birth_date" class="form-label">Дата рождения:</label>
+                <div class="profile-floating-label">
                     {{ profile_form.birth_date }}
+                    <label for="id_birth_date">Дата рождения</label>
                 </div>
-                <button type="submit" class="btn profile-btn w-100">💾 Сохранить изменения</button>
+                <button type="submit" class="btn btn-primary w-100">💾 Сохранить изменения</button>
             </form>
         </div>
     </div>
 </div>
-{% endif %}
+<script>
+// Parallax effect
+const profileBg = document.getElementById('profile-bg');
+const profileBg2 = document.getElementById('profile-bg2');
+const profileBg3 = document.getElementById('profile-bg3');
+document.addEventListener('mousemove', function(e) {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    profileBg.style.transform = `translate(${x}px, ${y}px) scale(1.03)`;
+    profileBg2.style.transform = `translate(${x/2}px, ${y/2}px) scale(1.01)`;
+    profileBg3.style.transform = `translate(${x/3}px, ${y/3}px) scale(1.01)`;
+});
+document.addEventListener('mouseleave', function() {
+    profileBg.style.transform = '';
+    profileBg2.style.transform = '';
+    profileBg3.style.transform = '';
+});
+</script>
+{% endblock %}
+
+{% block footer %}
+<footer style="background:rgba(255,255,255,0.93);border-top:2px solid #e0eafc;padding:2.2rem 0 1.2rem 0;margin-top:3rem;box-shadow:0 -2px 24px 0 rgba(80,120,200,0.07);">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <div class="mb-2 mb-md-0" style="font-weight:700;font-size:1.1em;color:#7fd7e7;">
+            <i class="fas fa-bus-alt me-2"></i>BusBooking © 2024
+        </div>
+        <div class="mb-2 mb-md-0">
+            <a href="mailto:info@busbooking.ru" class="me-3 text-primary"><i class="fas fa-envelope"></i> info@busbooking.ru</a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="me-3 text-primary"><i class="fab fa-vk"></i></a>
+            <a href="#" class="text-primary"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div style="font-size:0.95em;color:#b2e0e6;">Сделано с любовью для путешественников</div>
+    </div>
+</footer>
 {% endblock %} 
