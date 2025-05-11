@@ -186,7 +186,7 @@
         <a class="navbar-brand fw-bold" href="{% url 'home' %}">
             <i class="fas fa-bus-alt me-2"></i>BusBooking
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Переключить навигацию">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -239,7 +239,7 @@
                     <label for="ticket_type" class="form-label">Тип билета</label>
                     <select class="form-control" name="ticket_type" id="ticket_type">
                         <option value="adult">Взрослый</option>
-                        <option value="discount">Льготный</option>
+                        <option value="discount">Детский</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -259,18 +259,20 @@
                 </div>
                 <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" name="is_discount" id="is_discount" value="1">
-                    <label class="form-check-label" for="is_discount">Льготный билет</label>
+                    <label class="form-check-label" for="is_discount">Детский билет</label>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Далее</button>
             {% elif step == '3' %}
                 <input type="hidden" name="step" value="3">
                 <h5 class="mb-3 text-center">Проверьте данные перед подтверждением:</h5>
                 <ul class="list-group mb-4">
-                    <li class="list-group-item"><strong>Тип билета:</strong> {{ request.session.booking.ticket_type }}</li>
+                    <li class="list-group-item"><strong>Тип билета:</strong> 
+                        {% if request.session.booking.ticket_type == 'adult' %}Взрослый{% elif request.session.booking.ticket_type == 'discount' %}Детский{% else %}{{ request.session.booking.ticket_type }}{% endif %}
+                    </li>
                     <li class="list-group-item"><strong>Место:</strong> {{ request.session.booking.seat_number }}</li>
                     <li class="list-group-item"><strong>ФИО:</strong> {{ request.session.booking.passenger_name }}</li>
                     <li class="list-group-item"><strong>Дата рождения:</strong> {{ request.session.booking.passenger_birth }}</li>
-                    <li class="list-group-item"><strong>Льготный:</strong> {{ request.session.booking.is_discount|yesno:"Да,Нет" }}</li>
+                    <li class="list-group-item"><strong>Детский:</strong> {{ request.session.booking.is_discount|yesno:"Да,Нет" }}</li>
                 </ul>
                 <button type="submit" class="btn btn-success w-100">Подтвердить бронирование</button>
             {% endif %}
