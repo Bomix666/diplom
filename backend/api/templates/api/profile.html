@@ -242,13 +242,188 @@
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
+/* SVG-стрелки flatpickr */
+.flatpickr-current-month .flatpickr-prev-month svg,
+.flatpickr-current-month .flatpickr-next-month svg,
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+    stroke: #7fd7e7 !important;
+    stroke-width: 3px !important;
+    width: 22px;
+    height: 22px;
+    transition: stroke 0.18s;
+}
+.flatpickr-current-month .flatpickr-prev-month:hover svg,
+.flatpickr-current-month .flatpickr-next-month:hover svg,
+.flatpickr-prev-month:hover svg,
+.flatpickr-next-month:hover svg {
+    stroke: #fff !important;
+    background: #7fd7e7 !important;
+    border-radius: 50%;
+}
+.flatpickr-current-month .numInputWrapper input.cur-year {
+    border-radius: 8px !important;
+    border: 1.5px solid #e0eafc !important;
+    background: #fafdff !important;
+    color: #181c24 !important;
+    font-weight: 700;
+    padding: 0.1em 0.5em;
+    margin: 0 0.2em;
+    box-shadow: 0 1px 4px 0 rgba(127,215,231,0.07);
+    transition: border 0.18s, box-shadow 0.18s;
+}
+.flatpickr-current-month .numInputWrapper input.cur-year:focus {
+    border: 1.5px solid #7fd7e7 !important;
+    background: #fff !important;
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+<style>
+/* Кастомный современный flatpickr */
+.flatpickr-calendar {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px 0 rgba(127,215,231,0.18), 0 1.5px 0 0 #7fd7e7;
+    border: 2px solid #e0eafc !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: #fafdff !important;
+    z-index: 9999 !important;
+}
+.flatpickr-months {
+    border-radius: 16px 16px 0 0;
+    background: linear-gradient(90deg, #e0eafc 0%, #b2e0e6 100%) !important;
+    color: #181c24;
+}
+.flatpickr-month {
+    margin-bottom: 0.5em;
+}
+.flatpickr-current-month input.cur-year {
+    background: transparent !important;
+    color: #181c24 !important;
+    font-weight: 700;
+}
+.flatpickr-weekdays {
+    background: transparent !important;
+}
+.flatpickr-weekday {
+    color: #7fd7e7 !important;
+    font-weight: 700;
+    font-size: 1em;
+}
+.flatpickr-day {
+    border-radius: 10px !important;
+    font-size: 1.08em;
+    color: #181c24;
+    transition: background 0.18s, color 0.18s;
+}
+.flatpickr-day:hover, .flatpickr-day:focus {
+    background: #b2e0e6 !important;
+    color: #fff !important;
+}
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px #7fd7e7;
+}
+.flatpickr-day.today {
+    border: 2px solid #7fd7e7 !important;
+    background: #e0eafc !important;
+    color: #181c24 !important;
+}
+.flatpickr-day.disabled, .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+    color: #b2b2c3 !important;
+    background: transparent !important;
+    opacity: 0.6;
+}
+.flatpickr-time input, .flatpickr-time .flatpickr-am-pm {
+    border-radius: 8px;
+    border: 1.5px solid #e0eafc;
+    background: #fafdff;
+    color: #181c24;
+}
+.flatpickr-button, .flatpickr-clear, .flatpickr-today {
+    border-radius: 8px !important;
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%) !important;
+    color: #fff !important;
+    font-weight: 600;
+    border: none !important;
+    margin: 0 2px;
+    padding: 0.3em 1em;
+    transition: background 0.18s;
+}
+.flatpickr-button:hover, .flatpickr-clear:hover, .flatpickr-today:hover {
+    background: linear-gradient(90deg, #b2e0e6 0%, #7fd7e7 100%) !important;
+    color: #181c24 !important;
+}
+.flatpickr-prev-month, .flatpickr-next-month {
+    color: #7fd7e7 !important;
+    border-radius: 50%;
+    background: #e0eafc !important;
+    width: 32px;
+    height: 32px;
+    margin: 0 2px;
+    transition: background 0.18s;
+}
+.flatpickr-prev-month:hover, .flatpickr-next-month:hover {
+    background: #b2e0e6 !important;
+    color: #fff !important;
+}
+@media (max-width: 600px) {
+    .flatpickr-calendar {
+        font-size: 1.08em;
+        min-width: 90vw !important;
+        left: 5vw !important;
+        right: 5vw !important;
+    }
+}
+/* Кастомизация выпадающей менюшки выбора месяца/года flatpickr */
+.flatpickr-monthDropdown-months, .flatpickr-current-month .numInputWrapper {
+    background: #fafdff !important;
+    border-radius: 10px !important;
+    border: 1.5px solid #e0eafc !important;
+    box-shadow: 0 2px 8px 0 rgba(127,215,231,0.10);
+    color: #181c24 !important;
+    font-weight: 600;
+    padding: 0.2em 0.7em;
+    margin: 0 0.2em;
+}
+.flatpickr-monthDropdown-months:hover, .flatpickr-current-month .numInputWrapper:hover {
+    border: 1.5px solid #7fd7e7 !important;
+    background: #e0eafc !important;
+}
+.flatpickr-monthDropdown-months .flatpickr-monthDropdown-month, .flatpickr-current-month .numInputWrapper input {
+    background: transparent !important;
+    color: #181c24 !important;
+    font-weight: 600;
+    border: none !important;
+}
+.flatpickr-monthDropdown-month.selected, .flatpickr-monthDropdown-month:focus, .flatpickr-monthDropdown-month:hover {
+    background: linear-gradient(90deg, #7fd7e7 0%, #b2e0e6 100%) !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+}
+.flatpickr-current-month .arrowUp, .flatpickr-current-month .arrowDown {
+    color: #7fd7e7 !important;
+    background: #e0eafc !important;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s, color 0.18s;
+}
+.flatpickr-current-month .arrowUp:hover, .flatpickr-current-month .arrowDown:hover {
+    background: #b2e0e6 !important;
+    color: #fff !important;
+}
 </style>
 <nav class="navbar navbar-expand-lg wow-navbar">
     <div class="container">
         <a class="navbar-brand fw-bold" href="{% url 'home' %}">
             <i class="fas fa-bus-alt me-2"></i>BusBooking
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Переключить навигацию">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -367,4 +542,16 @@ document.addEventListener('mouseleave', function() {
         <div style="font-size:0.95em;color:#b2e0e6;">Сделано с любовью для путешественников</div>
     </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr("input[type='date']", {
+        dateFormat: "Y-m-d",
+        locale: "ru",
+        minDate: "1900-01-01",
+        disableMobile: true
+    });
+});
+</script>
 {% endblock %} 
