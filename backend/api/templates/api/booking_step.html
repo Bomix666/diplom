@@ -181,8 +181,8 @@
     .booking-step { min-width: 0; }
 }
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+
+
 <style>
 /* Кастомный современный flatpickr */
 .flatpickr-calendar {
@@ -421,6 +421,78 @@
     </div>
 </div>
 <script>
+// JS-календарь для выбора даты рождения
+const birthInput = document.getElementById('passenger_birth');
+const calendarContainer = document.getElementById('calendar-container');
+let calendarOpen = false;
+
+function formatDate(d) {
+    return d.toLocaleDateString('ru-RU');
+}
+
+function renderCalendarInput(month, year) {
+    const today = new Date();
+    const monthNames = [
+        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+    ];
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const startDay = (firstDay === 0) ? 6 : firstDay - 1;
+    let html = `<div class='card p-3' style='position:absolute;z-index:10;top:40px;left:0;min-width:300px;box-shadow:0 2px 12px rgba(80,120,200,0.12);border-radius:16px;'>`;
+    html += `<div class='d-flex justify-content-between align-items-center mb-2'>
+        <button class='btn btn-primary btn-sm' id='prevMonth'>&lt;</button>
+        <span style='font-weight:600;'>${monthNames[month]} ${year}</span>
+        <button class='btn btn-primary btn-sm' id='nextMonth'>&gt;</button>
+    </div>`;
+    html += `<table class='table table-bordered text-center mb-0' style='background:#fff;border-radius:12px;overflow:hidden;'>`;
+    html += `<thead class='table-primary'><tr><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th></tr></thead><tbody>`;
+    let date = 1;
+    for (let i = 0; i < 6; i++) {
+        html += '<tr>';
+        for (let j = 0; j < 7; j++) {
+            if ((i === 0 && j < startDay) || date > daysInMonth) {
+                html += '<td></td>';
+            } else {
+                let isToday = (date === today.getDate() && month === today.getMonth() && year === today.getFullYear());
+                html += `<td class='calendar-day' style='padding:0.7em;cursor:pointer;${isToday ? "background:#b2e0e6;font-weight:700;border-radius:8px;" : ""}' data-date='${date}'>${date}</td>`;
+                date++;
+            }
+        }
+        html += '</tr>';
+        if (date > daysInMonth) break;
+    }
+    html += '</tbody></table></div>';
+    calendarContainer.innerHTML = html;
+    calendarOpen = true;
+
+    document.getElementById('prevMonth').onclick = function() {
+        renderCalendarInput(month === 0 ? 11 : month - 1, month === 0 ? year - 1 : year);
+    };
+    document.getElementById('nextMonth').onclick = function() {
+        renderCalendarInput(month === 11 ? 0 : month + 1, month === 11 ? year + 1 : year);
+    };
+    calendarContainer.querySelectorAll('.calendar-day').forEach(td => {
+        td.onclick = function() {
+            const selectedDate = new Date(year, month, Number(this.dataset.date));
+            birthInput.value = selectedDate.toLocaleDateString('ru-RU');
+            calendarContainer.innerHTML = '';
+            calendarOpen = false;
+        };
+    });
+}
+birthInput.addEventListener('focus', function(e) {
+    if (!calendarOpen) {
+        const now = birthInput.value ? (() => { let p = birthInput.value.split('.'); return new Date(p[2], p[1]-1, p[0]); })() : new Date(2000,0,1);
+        renderCalendarInput(now.getMonth(), now.getFullYear());
+    }
+});
+document.addEventListener('mousedown', function(e) {
+    if (calendarOpen && !calendarContainer.contains(e.target) && e.target !== birthInput) {
+        calendarContainer.innerHTML = '';
+        calendarOpen = false;
+    }
+});
 // Parallax effect
 const bookingBg = document.getElementById('booking-bg');
 const bookingBg2 = document.getElementById('booking-bg2');
@@ -455,16 +527,4 @@ document.addEventListener('mouseleave', function() {
         <div style="font-size:0.95em;color:#b2e0e6;">Сделано с любовью для путешественников</div>
     </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    flatpickr("input[type='date']", {
-        dateFormat: "Y-m-d",
-        locale: "ru",
-        minDate: "today",
-        disableMobile: true
-    });
-});
-</script>
-{% endblock %} 
+{% endblock %}
